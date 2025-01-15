@@ -1,1 +1,3 @@
 # kodosumi
+
+UI draft
