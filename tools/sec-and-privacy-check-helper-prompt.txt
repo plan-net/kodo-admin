@@ -1,0 +1,6 @@
+Given my intention to publish this project to a public repository, could you please analyze the provided files to identify any information that might pose security or privacy risks? Specifically, I'm concerned about:
+
+Exposed tokens, secrets (API keys, database credentials), or passwords.
+Unintentionally revealed file paths, sensitive patterns in the .gitignore file, or any metadata that could hint at private information.
+Details about my system, development environment, or user data that could be exploited.
+Please highlight specific examples from the files and provide actionable recommendations to eliminate these risks before making the repository public.
