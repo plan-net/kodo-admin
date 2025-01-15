@@ -1,0 +1,40 @@
+{
+  "node-1": {
+    "output": "{\n  \"result\": \"Successfully processed request\",\n  \"data\": {\n    \"id\": \"tx_123456\",\n    \"amount\": 1500,\n    \"currency\": \"USD\",\n    \"status\": \"completed\",\n    \"timestamp\": \"2024-03-20T15:30:00Z\"\n  },\n  \"metadata\": {\n    \"processingTime\": \"1.23s\",\n    \"region\": \"us-east-1\"\n  }\n}\n\n{\n  \"result\": \"Successfully processed request\",\n  \"data\": {\n    \"id\": \"tx_123457\",\n    \"amount\": 2500,\n    \"currency\": \"USD\",\n    \"status\": \"completed\",\n    \"timestamp\": \"2024-03-20T15:31:00Z\"\n  }\n}\n",
+    "flowSteps": [
+      "1. Initializing request validation...",
+      "2. Checking input parameters...",
+      "3. Validating user credentials...",
+      "4. Processing transaction...",
+      "5. Updating database records...",
+      "6. Sending confirmation email...",
+      "7. Generating audit log...",
+      "8. Finalizing transaction...",
+      "9. Cleaning up resources...",
+      "10. Request completed successfully"
+    ],
+    "status": {
+      "running": true,
+      "step": 6,
+      "totalSteps": 10
+    }
+  },
+  "node-2": {
+    "output": "Error encountered during processing:\n\nStackTrace:\nError: Unable to connect to database\n    at Database.connect (/src/db.ts:45:12)\n    at async ProcessManager.init (/src/process.ts:23:5)\n    at async NodeController.execute (/src/controller.ts:67:8)\n\nDetails:\n- Connection timeout after 5000ms\n- Host: db.example.com\n- Port: 5432\n- Database: production\n\nTroubleshooting steps:\n1. Check network connectivity\n2. Verify database credentials\n3. Ensure database server is running\n4. Check firewall settings\n\nError encountered during processing:\n\nStackTrace:\nError: Unable to connect to database\n    at Database.connect (/src/db.ts:45:12)\n    at async ProcessManager.init (/src/process.ts:23:5)",
+    "flowSteps": [
+      "1. Starting database connection...",
+      "2. Connection attempt failed...",
+      "3. Retrying connection (1/3)...",
+      "4. Retrying connection (2/3)...",
+      "5. Retrying connection (3/3)...",
+      "6. All retries exhausted",
+      "7. Logging error details",
+      "8. Process terminated with error"
+    ],
+    "status": {
+      "running": false,
+      "step": 8,
+      "totalSteps": 8
+    }
+  }
+} 

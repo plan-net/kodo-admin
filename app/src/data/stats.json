@@ -1,0 +1,16 @@
+{
+  "revenue": {
+    "monthly": [
+      {
+        "month": "2024-01",
+        "value": 65.89,
+        "growth": 2.15
+      }
+    ],
+    "current": {
+      "percentage": 65.89,
+      "amount": 3345.12,
+      "growth": 2.15
+    }
+  }
+} 

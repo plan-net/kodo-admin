@@ -1,0 +1,29 @@
+{
+  "notifications": [
+    {
+      "id": "notif-1",
+      "title": "Node 1 Status Change",
+      "message": "Production Node 1 has stopped responding",
+      "timestamp": "2024-03-15T10:30:00",
+      "type": "error",
+      "read": false
+    },
+    {
+      "id": "notif-2",
+      "title": "High Queue Length",
+      "message": "Node 2 queue length exceeds threshold",
+      "timestamp": "2024-03-15T09:45:00",
+      "type": "warning",
+      "read": false
+    },
+    {
+      "id": "notif-3",
+      "title": "System Update",
+      "message": "New version 2.3.0 is available",
+      "timestamp": "2024-03-14T15:20:00",
+      "type": "info",
+      "read": true
+    }
+  ],
+  "unreadCount": 2
+} 

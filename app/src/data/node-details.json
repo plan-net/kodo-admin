@@ -1,0 +1,101 @@
+{
+  "node-1": {
+    "id": "node-1",
+    "name": "Production Node 1",
+    "description": "Primary production node for processing requests",
+    "tags": ["Production", "High Priority", "Load Balanced"],
+    "status": {
+      "attached": true,
+      "attachedTime": "2024-02-10T20:57:00",
+      "responds": true,
+      "responseTime": "2.34ms",
+      "taskStatus": "Running"
+    },
+    "metrics": {
+      "callsAmount": 1234,
+      "workersAmount": 8,
+      "queueLength": 0
+    },
+    "revenue": {
+      "monthly": [
+        { "month": "2024-01", "value": 65.89, "growth": 2.15 },
+        { "month": "2024-02", "value": 70.23, "growth": 1.89 },
+        { "month": "2024-03", "value": 75.45, "growth": 2.34 },
+        { "month": "2024-04", "value": 68.92, "growth": -1.23 },
+        { "month": "2024-05", "value": 72.56, "growth": 1.67 },
+        { "month": "2024-06", "value": 80.12, "growth": 2.89 }
+      ],
+      "current": {
+        "percentage": 65.89,
+        "amount": 3345.12,
+        "growth": 2.15
+      }
+    }
+  },
+  "node-2": {
+    "id": "node-2",
+    "name": "Production Node 2", 
+    "description": "Secondary production node for load balancing",
+    "tags": ["Production", "Load Balanced"],
+    "status": {
+      "attached": true,
+      "attachedTime": "2024-02-09T15:30:00",
+      "responds": false,
+      "responseTime": "5.67ms",
+      "taskStatus": "Error"
+    },
+    "metrics": {
+      "callsAmount": 856,
+      "workersAmount": 8,
+      "queueLength": 23
+    },
+    "revenue": {
+      "monthly": [
+        { "month": "2024-01", "value": 45.67, "growth": 1.45 },
+        { "month": "2024-02", "value": 50.34, "growth": 1.78 },
+        { "month": "2024-03", "value": 55.78, "growth": 2.12 },
+        { "month": "2024-04", "value": 48.90, "growth": -1.56 },
+        { "month": "2024-05", "value": 52.45, "growth": 1.34 },
+        { "month": "2024-06", "value": 60.23, "growth": 2.45 }
+      ],
+      "current": {
+        "percentage": 45.67,
+        "amount": 2456.78,
+        "growth": 1.45
+      }
+    }
+  },
+  "node-3": {
+    "id": "node-3",
+    "name": "Development Node 1",
+    "description": "Development and testing environment node",
+    "tags": ["Development", "Testing"],
+    "status": {
+      "attached": true,
+      "attachedTime": "2024-02-11T09:15:00",
+      "responds": true,
+      "responseTime": "1.98ms",
+      "taskStatus": "Running"
+    },
+    "metrics": {
+      "callsAmount": 456,
+      "workersAmount": 4,
+      "queueLength": 2
+    },
+    "revenue": {
+      "monthly": [
+        { "month": "2024-01", "value": 35.45, "growth": 1.23 },
+        { "month": "2024-02", "value": 40.12, "growth": 1.56 },
+        { "month": "2024-03", "value": 45.67, "growth": 1.89 },
+        { "month": "2024-04", "value": 38.90, "growth": -1.34 },
+        { "month": "2024-05", "value": 42.34, "growth": 1.23 },
+        { "month": "2024-06", "value": 50.12, "growth": 2.12 }
+      ],
+      "current": {
+        "percentage": 35.45,
+        "amount": 1567.89,
+        "growth": 1.23
+      }
+    }
+  }
+} 

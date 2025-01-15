@@ -1,0 +1,11 @@
+{
+  "node-1": {
+    "logs": "[2024-03-20 10:15:32] INFO: Node startup completed\n[2024-03-20 10:15:33] INFO: Connected to main registry\n[2024-03-20 10:15:34] DEBUG: Initializing cache system\n[2024-03-20 10:15:35] INFO: Cache warmup completed\n[2024-03-20 10:16:01] DEBUG: Processing request #1242\n[2024-03-20 10:16:02] INFO: Request completed successfully\n[2024-03-20 10:16:05] WARN: High memory usage detected (85%)\n[2024-03-20 10:16:10] INFO: Memory optimization initiated"
+  },
+  "node-2": {
+    "logs": "[2024-03-20 10:10:15] INFO: Node startup initiated\n[2024-03-20 10:10:16] ERROR: Failed to connect to primary database\n[2024-03-20 10:10:17] INFO: Attempting fallback connection\n[2024-03-20 10:10:18] INFO: Connected to backup database\n[2024-03-20 10:10:20] WARN: Operating in fallback mode\n[2024-03-20 10:10:25] DEBUG: Running system diagnostics\n[2024-03-20 10:10:30] INFO: Diagnostic complete - all systems operational"
+  },
+  "node-3": {
+    "logs": "[2024-03-20 10:20:00] INFO: Node startup completed\n[2024-03-20 10:20:01] INFO: Registry sync started\n[2024-03-20 10:20:02] DEBUG: Processing batch updates\n[2024-03-20 10:20:03] INFO: Batch update completed\n[2024-03-20 10:20:05] DEBUG: Health check passed\n[2024-03-20 10:20:10] INFO: New client connection established\n[2024-03-20 10:20:15] DEBUG: Processing incoming requests"
+  }
+} 

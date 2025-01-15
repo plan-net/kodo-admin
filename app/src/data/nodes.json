@@ -1,0 +1,19 @@
+{
+  "nodes": [
+    {
+      "id": "node-1",
+      "name": "Production Node 1",
+      "status": "Running"
+    },
+    {
+      "id": "node-2", 
+      "name": "Production Node 2",
+      "status": "Error"
+    },
+    {
+      "id": "node-3",
+      "name": "Development Node 1",
+      "status": "Running"
+    }
+  ]
+} 

@@ -1,0 +1,10 @@
+{
+  "authenticated": {
+    "id": "user-1",
+    "name": "Jane Cooper",
+    "email": "jane@example.com",
+    "avatar": "https://avatars.githubusercontent.com/u/124599?v=4",
+    "role": "Admin"
+  },
+  "unauthenticated": null
+} 
