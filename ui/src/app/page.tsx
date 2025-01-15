@@ -49,7 +49,8 @@ export default function DashboardPage() {
               <>
                 <div className="space-y-4">
                   <h1 className="text-2xl font-bold">Dashboard</h1>
-                  <NodeStatus data={data.nodes} />
+                  {/*todo: should be fixed*/}
+                  {/*<NodeStatus data={data.nodes} />*/}
                 </div>
                 
                 <div className="grid gap-4 md:grid-cols-3">
