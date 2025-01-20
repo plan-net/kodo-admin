@@ -8,6 +8,7 @@ import { Sidebar } from '@/components/layout/sidebar'
 import { NodeInfo } from '@/components/node/node-info'
 import { api } from '@/lib/api'
 import { useSearchParams } from 'next/navigation'
+import TestComponent from '@/components/ui/test-component'
 
 export default function DashboardPage() {
   const searchParams = useSearchParams()
@@ -40,9 +41,12 @@ export default function DashboardPage() {
   return (
     <div className="flex">
       <Sidebar />
+
       <main className="flex-1 ml-64 min-h-screen text-gray-100">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="p-8 space-y-8">
+            <TestComponent/>
+
             {selectedNodeId ? (
               <NodeInfo data={data.selectedNode} />
             ) : (
