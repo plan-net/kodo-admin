@@ -11,7 +11,7 @@ export function FlowHeader({ name, description, subtitle }: FlowHeaderProps) {
     <div className="space-y-4">
       <div className="space-y-1">
         <h1 className="text-2xl font-semibold tracking-tight">
-          {name}
+          {name || "Registry name"}
         </h1>
         {subtitle && (
           <p className="text-sm text-muted-foreground">
@@ -21,7 +21,7 @@ export function FlowHeader({ name, description, subtitle }: FlowHeaderProps) {
       </div>
       <div className="space-y-2">
         <p className="text-muted-foreground">
-          {description || "Select a flow to see its information"}
+          {description || "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua."}
         </p>
         {description && (
           <div className="flex gap-4 text-sm">

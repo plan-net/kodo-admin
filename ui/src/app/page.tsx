@@ -48,8 +48,8 @@ export default function DashboardPage() {
           <div className="p-8 space-y-8">
             <FlowInfo 
               data={{
-                registryName: "Pinned Flows",
-                registryDescription: "Your favorite flows that you've pinned for quick access",
+                registryName: "Registry name",
+                registryDescription: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
                 flows: pinnedFlows.map(flow => ({
                   id: flow.url.split('/').pop() || '',
                   name: flow.name,
