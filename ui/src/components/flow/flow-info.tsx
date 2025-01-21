@@ -46,6 +46,13 @@ interface FlowData {
     status: string
     kind: string
   }>
+  output: string
+  flowSteps: string[]
+  status: {
+    running: boolean
+    step: number
+    totalSteps: number
+  }
 }
 
 interface FlowInfoProps {
@@ -164,11 +171,9 @@ export function FlowInfo({
               />
               <NodeOutput
                 nodeId={selectedFlow?.id || ''}
-                status={{
-                  running: true,
-                  step: 2,
-                  totalSteps: 7
-                }}
+                status={selectedFlow?.status || { running: false, step: 0, totalSteps: 0 }}
+                output={selectedFlow?.output || ''}
+                flowSteps={selectedFlow?.flowSteps || []}
                 onInterrupt={() => console.log('Interrupt')}
                 onClear={() => console.log('Clear output')}
                 onRetry={() => console.log('Retry')}

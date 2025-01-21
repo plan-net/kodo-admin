@@ -154,7 +154,22 @@ export const api = {
             status: 'Failed',
             kind: 'Debugging'
           }
-        ]
+        ],
+        output: `Output for ${flow.name}:\n\nAnalysis complete:\n- Processing time: 1.2s\n- Confidence score: 0.95\n- Key findings: Successfully processed with optimal parameters`,
+        flowSteps: [
+          '1. Initializing flow components...',
+          '2. Loading input data...',
+          '3. Preprocessing data structures...',
+          '4. Applying transformation rules...',
+          '5. Validating output format...',
+          '6. Generating final response...',
+          '7. Cleanup and resource release'
+        ],
+        status: {
+          running: Math.random() > 0.5,
+          step: Math.floor(Math.random() * 7) + 1,
+          totalSteps: 7
+        }
       }));
 
       return {

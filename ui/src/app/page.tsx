@@ -43,8 +43,8 @@ export default function DashboardPage() {
     <div className="flex">
       <Sidebar />
 
-      <main className="flex-1 ml-64 min-h-screen text-gray-100">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <main className="flex-1 ml-[250px] min-h-screen text-gray-100">
+        <div className="max-w-[1920px] mx-auto px-4 sm:px-6 lg:px-8">
           <div className="p-8 space-y-8">
             <FlowInfo 
               data={{
