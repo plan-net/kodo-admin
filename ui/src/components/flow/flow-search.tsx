@@ -11,6 +11,21 @@ interface FlowSearchProps {
 
 export function FlowSearch({ onSearchChange, selectedTags, onTagsChange, availableTags }: FlowSearchProps) {
   const [searchQuery, setSearchQuery] = useState("")
+  const [allTags, setAllTags] = useState<string[]>([])
+
+  // Add useEffect to fetch and process tags when component mounts
+  useEffect(() => {
+    const fetchTags = async () => {
+      const results = await api.getFlows();
+      // Extract unique tags from all flows
+      const tags = new Set<string>();
+      results.items.forEach(flow => {
+        flow.tags.forEach((tag: string) => tags.add(tag));
+      });
+      setAllTags(Array.from(tags));
+    };
+    fetchTags();
+  }, []);
 
   // Debounce search to avoid too many API calls
   useEffect(() => {
@@ -83,7 +98,7 @@ export function FlowSearch({ onSearchChange, selectedTags, onTagsChange, availab
         />
       </div>
       <div className="flex flex-wrap gap-2">
-        {availableTags.map((tag, index) => (
+        {allTags.map((tag, index) => (
           <Badge
             key={`${tag}-${index}`}
             className={`cursor-pointer ${
