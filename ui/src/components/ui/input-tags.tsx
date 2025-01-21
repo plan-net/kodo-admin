@@ -10,27 +10,30 @@ import { type InputProps } from "./input";
 type InputTagsProps = Omit<InputProps, "value" | "onChange"> & {
   value: string[];
   onChange: (tags: string[]) => void;
+  availableTags?: string[];
 };
 
 const InputTags = React.forwardRef<HTMLInputElement, InputTagsProps>(
-  ({ className, value, onChange, ...props }, ref) => {
+  ({ className, value, onChange, availableTags, ...props }, ref) => {
     const [pendingDataPoint, setPendingDataPoint] = React.useState("");
 
     React.useEffect(() => {
       if (pendingDataPoint.includes(",")) {
-        const newDataPoints = new Set([
-          ...value,
-          ...pendingDataPoint.split(",").map((chunk) => chunk.trim()),
-        ]);
-        onChange(Array.from(newDataPoints));
+        const newTags = pendingDataPoint
+          .split(",")
+          .map((chunk) => chunk.trim())
+          .filter(tag => !value.includes(tag));
+        
+        if (newTags.length > 0) {
+          onChange([...value, ...newTags]);
+        }
         setPendingDataPoint("");
       }
     }, [pendingDataPoint, onChange, value]);
 
     const addPendingDataPoint = () => {
-      if (pendingDataPoint) {
-        const newDataPoints = new Set([...value, pendingDataPoint]);
-        onChange(Array.from(newDataPoints));
+      if (pendingDataPoint && !value.includes(pendingDataPoint)) {
+        onChange([...value, pendingDataPoint]);
         setPendingDataPoint("");
       }
     };
@@ -43,7 +46,7 @@ const InputTags = React.forwardRef<HTMLInputElement, InputTagsProps>(
         )}
       >
         {value.map((item) => (
-          <Badge key={item} variant="secondary" className="bg-secondary/20 text-muted border border-border px-2 py-1 rounded-md text-sm">
+          <Badge key={item} variant="secondary" className="bg-card text-foreground border border-border px-2 py-1 rounded-md text-sm">
             {item}
             <Button
               variant="ghost"
