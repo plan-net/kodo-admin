@@ -1,0 +1,66 @@
+{
+  "total": 4,
+  "filtered": 4,
+  "p": 0,
+  "pp": 10,
+  "items": [
+    {
+      "name": "Agent Alpha",
+      "description": "Stealth operations expert",
+      "organization": "Plan.Net Journey Agentic Node",
+      "author": "tom.hanks@example.com",
+      "tags": [
+        "stealth",
+        "operations"
+      ],
+      "created": "2025-01-21T11:20:26.419086+00:00",
+      "modified": "2025-01-21T11:20:26.419086+00:00",
+      "heartbeat": null,
+      "url": "http://localhost:3366/flows/agent-alpha"
+    },
+    {
+      "name": "Agent Bravo",
+      "description": "Tactical strategist",
+      "organization": "Plan.Net Journey Agentic Node",
+      "author": "meryl.streep@example.com",
+      "tags": [
+        "tactical",
+        "strategy"
+      ],
+      "created": "2025-01-21T11:20:26.419086+00:00",
+      "modified": "2025-01-21T11:20:26.419086+00:00",
+      "heartbeat": null,
+      "url": "http://localhost:3366/flows/agent-bravo"
+    },
+    {
+      "name": "Agent Charlie",
+      "description": "Cybersecurity specialist",
+      "organization": "Plan.Net Journey Agentic Node",
+      "author": "leonardo.dicaprio@example.com",
+      "tags": [
+        "cybersecurity",
+        "tech"
+      ],
+      "created": "2025-01-21T11:20:26.419086+00:00",
+      "modified": "2025-01-21T11:20:26.419086+00:00",
+      "heartbeat": null,
+      "url": "http://localhost:3366/flows/agent-charlie"
+    },
+    {
+      "name": "Agent Delta",
+      "description": "Undercover operative",
+      "organization": "Plan.Net Journey Agentic Node",
+      "author": "scarlett.johansson@example.com",
+      "tags": [
+        "undercover",
+        "operative"
+      ],
+      "created": "2025-01-21T11:20:26.419086+00:00",
+      "modified": "2025-01-21T11:20:26.419086+00:00",
+      "heartbeat": null,
+      "url": "http://localhost:3366/flows/agent-delta"
+    }
+  ],
+  "by": "name, url",
+  "q": null
+}

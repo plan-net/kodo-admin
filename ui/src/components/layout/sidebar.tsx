@@ -6,39 +6,42 @@ import { useEffect, useState } from 'react'
 import { LayoutDashboard, Activity, ChevronLeft, ChevronRight } from 'lucide-react'
 import { api } from '@/lib/api'
 
-interface Node {
-  id: string
+interface Flow {
   name: string
-  status: string
+  description: string
+  url: string
+  heartbeat: string | null
+  tags: string[]
 }
 
 export function Sidebar() {
   const pathname = usePathname()
   const searchParams = useSearchParams()
   const router = useRouter()
-  const [nodes, setNodes] = useState<Node[]>([])
+  const [flows, setFlows] = useState<Flow[]>([])
   const [isLoading, setIsLoading] = useState(true)
   const [isCollapsed, setIsCollapsed] = useState(false)
   
-  const selectedNodeId = searchParams.get('nodeId')
+  const selectedFlowId = searchParams.get('flowId')
   
   useEffect(() => {
-    const fetchNodes = async () => {
+    const fetchFlows = async () => {
       try {
-        const response = await api.getNodes()
-        setNodes(response.nodes)
+        const response = await api.getFlows()
+        setFlows(response.items)
       } catch (error) {
-        console.error('Failed to fetch nodes:', error)
+        console.error('Failed to fetch flows:', error)
       } finally {
         setIsLoading(false)
       }
     }
 
-    fetchNodes()
+    fetchFlows()
   }, [])
 
-  const handleNodeClick = (nodeId: string) => {
-    router.push(`/?nodeId=${nodeId}`)
+  const handleFlowClick = (flowUrl: string) => {
+    const flowId = flowUrl.split('/').pop()
+    router.push(`/?flowId=${flowId}`)
   }
 
   return (
@@ -60,9 +63,9 @@ export function Sidebar() {
           </button>
         </div>
         
-        {/* Nodes section */}
+        {/* Flows section */}
         <div>
-          {!isCollapsed && <h2 className="text-xs font-medium text-muted-foreground uppercase mb-2 px-2">Nodes</h2>}
+          {!isCollapsed && <h2 className="text-xs font-medium text-muted-foreground uppercase mb-2 px-2">Flows</h2>}
           <nav className="space-y-1 bg-card-background p-2 rounded-lg border border-border/50">
             {isLoading ? (
               <div className="space-y-2">
@@ -71,12 +74,12 @@ export function Sidebar() {
                 ))}
               </div>
             ) : (
-              nodes.map((node) => (
+              flows.map((flow) => (
                 <button
-                  key={node.id}
-                  onClick={() => handleNodeClick(node.id)}
+                  key={flow.url}
+                  onClick={() => handleFlowClick(flow.url)}
                   className={`w-full text-left px-3 py-2 rounded-lg text-sm transition-colors ${
-                    selectedNodeId === node.id
+                    selectedFlowId === flow.url.split('/').pop()
                       ? 'bg-card-hover text-foreground'
                       : 'hover:bg-card-hover/50 text-muted-foreground'
                   }`}
@@ -84,13 +87,13 @@ export function Sidebar() {
                   <div className="flex items-center justify-between">
                     {isCollapsed ? (
                       <span className={`w-2 h-2 rounded-full mx-auto ${
-                        node.status === 'Running' ? 'bg-green-500' : 'bg-red-500'
+                        flow.heartbeat ? 'bg-green-500' : 'bg-red-500'
                       }`} />
                     ) : (
                       <>
-                        <span>{node.name}</span>
+                        <span>{flow.name}</span>
                         <span className={`w-2 h-2 rounded-full ${
-                          node.status === 'Running' ? 'bg-green-500' : 'bg-red-500'
+                          flow.heartbeat ? 'bg-green-500' : 'bg-red-500'
                         }`} />
                       </>
                     )}
@@ -108,7 +111,7 @@ export function Sidebar() {
           <button
             onClick={() => router.push('/')}
             className={`w-full text-left px-3 py-2 rounded-lg text-sm flex items-center gap-2 transition-colors ${
-              !selectedNodeId 
+              !selectedFlowId 
                 ? 'bg-card-hover text-foreground' 
                 : 'hover:bg-card-hover/50 text-muted-foreground'
             }`}
