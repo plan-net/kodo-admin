@@ -16,6 +16,7 @@ import { NodeMainSettings } from '@/components/node/node-main-settings'
 import { NodePricing } from '@/components/node/node-pricing'
 import { NodeDangerZone } from '@/components/node/node-danger-zone'
 import { ExportButton } from "@/components/ui/export-button"
+import { NodeStats } from '@/components/node/node-stats'
 
 interface FlowData {
   id?: string
@@ -128,6 +129,34 @@ export function FlowInfo({
               name={selectedFlow?.name || data.registryName}
               description={selectedFlow?.description || data.registryDescription}
             />
+            <NodeStats data={{
+              status: {
+                attached: {
+                  status: true,
+                  timestamp: selectedFlow?.created || ''
+                },
+                responds: {
+                  status: true,
+                  value: '200ms'
+                },
+                taskStatus: {
+                  status: 'Running',
+                  message: 'Active'
+                },
+                callsAmount: {
+                  value: selectedFlow?.requests?.length.toString() || '0',
+                  trend: 'up'
+                },
+                maxWorkers: {
+                  value: 5,
+                  description: 'Active workers'
+                },
+                queueLength: {
+                  value: 0,
+                  description: 'Pending requests'
+                }
+              }
+            }} />
             <div className="grid grid-cols-2 gap-6">
               <NodeInput 
                 onSubmit={(data) => console.log('Submit:', data)}
@@ -174,6 +203,34 @@ export function FlowInfo({
               name={selectedFlow?.name || data.registryName}
               description={selectedFlow?.description || data.registryDescription}
             />
+            <NodeStats data={{
+              status: {
+                attached: {
+                  status: true,
+                  timestamp: selectedFlow?.created || ''
+                },
+                responds: {
+                  status: true,
+                  value: '200ms'
+                },
+                taskStatus: {
+                  status: 'Running',
+                  message: 'Active'
+                },
+                callsAmount: {
+                  value: selectedFlow?.requests?.length.toString() || '0',
+                  trend: 'up'
+                },
+                maxWorkers: {
+                  value: 5,
+                  description: 'Active workers'
+                },
+                queueLength: {
+                  value: 0,
+                  description: 'Pending requests'
+                }
+              }
+            }} />
             <div className="mt-8">
               <div className="flex items-center justify-between mb-4">
                 <h2 className="text-xl font-semibold">Flow's Requests Table</h2>
@@ -198,6 +255,34 @@ export function FlowInfo({
               name={selectedFlow?.name || data.registryName}
               description={selectedFlow?.description || data.registryDescription}
             />
+            <NodeStats data={{
+              status: {
+                attached: {
+                  status: true,
+                  timestamp: selectedFlow?.created || ''
+                },
+                responds: {
+                  status: true,
+                  value: '200ms'
+                },
+                taskStatus: {
+                  status: 'Running',
+                  message: 'Active'
+                },
+                callsAmount: {
+                  value: selectedFlow?.requests?.length.toString() || '0',
+                  trend: 'up'
+                },
+                maxWorkers: {
+                  value: 5,
+                  description: 'Active workers'
+                },
+                queueLength: {
+                  value: 0,
+                  description: 'Pending requests'
+                }
+              }
+            }} />
             <div className="rounded-lg border border-border bg-background p-6 w-full">
               <div className="flex items-center justify-between mb-6">
                 <h2 className="text-xl font-semibold">Logs</h2>
