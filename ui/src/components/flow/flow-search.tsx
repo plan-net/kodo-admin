@@ -1,6 +1,7 @@
 import { Badge } from "@/components/ui/badge"
 import { useEffect, useState } from "react"
 import { api } from "@/lib/api"
+import { FlowTag } from "./flow-tag"
 
 interface FlowSearchProps {
   onSearchChange: (results: { items: any[] }) => void
@@ -61,28 +62,26 @@ export function FlowSearch({ onSearchChange, selectedTags, onTagsChange, availab
   };
 
   const handleTagClick = async (tag: string) => {
-    // Calculate newTags array
-    const newTags = selectedTags.includes(tag)
-      ? selectedTags.filter(t => t !== tag) // Remove tag
-      : [...selectedTags, tag]; // Add tag
-
-    // Update tags state
-    onTagsChange(newTags);
+    // Simplify the tag handling - just call onTagsChange with the tag
+    onTagsChange([tag])
 
     // Get base results depending on search query
     const results = searchQuery.trim()
-      ? await api.searchFlows(searchQuery) // Search with query
-      : await api.getFlows(); // Get all flows
+      ? await api.searchFlows(searchQuery)
+      : await api.getFlows();
 
-    // Only filter results if there are any selected tags
-    if (newTags.length > 0) {
+    // Filter results based on the updated selected tags
+    const updatedSelectedTags = selectedTags.includes(tag)
+      ? selectedTags.filter(t => t !== tag)
+      : [...selectedTags, tag];
+
+    if (updatedSelectedTags.length > 0) {
       results.items = results.items.filter(flow =>
-        newTags.every(tag => flow.tags.includes(tag)) // Filter by newTags
+        updatedSelectedTags.every(tag => flow.tags.includes(tag))
       );
-      results.filtered = results.items.length;
     }
-
-    // Update search results
+    
+    results.filtered = results.items.length;
     onSearchChange(results);
   };
 
@@ -98,18 +97,13 @@ export function FlowSearch({ onSearchChange, selectedTags, onTagsChange, availab
         />
       </div>
       <div className="flex flex-wrap gap-2">
-        {allTags.map((tag, index) => (
-          <Badge
-            key={`${tag}-${index}`}
-            className={`cursor-pointer ${
-              selectedTags.includes(tag)
-                ? 'bg-primary hover:bg-primary/80'
-                : 'bg-secondary/20 hover:bg-secondary/40'
-            } text-muted border border-border px-4 py-2 rounded-lg text-sm`}
-            onClick={() => handleTagClick(tag)}
-          >
-            {tag}
-          </Badge>
+        {allTags.map((tag) => (
+          <FlowTag
+            key={tag}
+            tag={tag}
+            isSelected={selectedTags.includes(tag)}
+            onClick={handleTagClick}
+          />
         ))}
       </div>
     </div>

@@ -68,7 +68,11 @@ export const api = {
 
   // Get list of all flows
   getFlows: () =>
-    Promise.delay(500).then(() => flowsData),
+    Promise.delay(500).then(() => ({
+      total: flowsData.items.length,
+      filtered: flowsData.items.length,
+      items: flowsData.items
+    })),
 
   // Get all unique tags from flows
   getAllFlowTags: () =>
@@ -85,17 +89,18 @@ export const api = {
     Promise.delay(400).then(() => {
       const options = {
         keys: ['name', 'description', 'tags', 'author', 'organization'],
-        threshold: 0.4, // Lower threshold = stricter matching
+        threshold: 0.4,
         includeScore: true
       };
 
       const fuse = new Fuse(flowsData.items, options);
-      const results = fuse.search(query);
+      const searchResults = fuse.search(query);
+      const items = searchResults.map(result => result.item);
       
       return {
-        total: results.length,
-        filtered: results.length,
-        items: results.map(result => result.item)
+        total: flowsData.items.length, // Total should be all possible items
+        filtered: items.length,        // Filtered is the search results
+        items: items
       };
     }),
 

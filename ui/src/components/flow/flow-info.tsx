@@ -34,17 +34,35 @@ interface FlowInfoProps {
   data: {
     registryName: string
     registryDescription: string
-    flows: FlowData[]
+    flows: Array<{
+      id: string
+      url: string
+      name: string
+      description: string
+      tags: string[]
+      price: number
+      author: string
+      organization: string
+      created: string
+      modified: string
+      isPinned: boolean
+    }>
   }
+  onPin: (flow: any) => void
+  selectedTags: string[]
+  onTagClick: (tag: string) => void
 }
 
-export function FlowInfo({ data }: FlowInfoProps) {
+export function FlowInfo({ 
+  data, 
+  onPin, 
+  selectedTags, 
+  onTagClick 
+}: FlowInfoProps) {
   const [selectedAction, setSelectedAction] = useState('Welcome')
-  const [selectedTags, setSelectedTags] = useState<string[]>([])
-  const [filteredFlows, setFilteredFlows] = useState<FlowData[]>(data?.flows || [])
+  const [filteredFlows, setFilteredFlows] = useState(data?.flows || [])
 
-  // Handle search results from FlowSearch
-  const handleSearchResults = (results: { items: FlowData[] }) => {
+  const handleSearchResults = (results: { items: any[] }) => {
     setFilteredFlows(results.items)
   }
 
@@ -61,7 +79,7 @@ export function FlowInfo({ data }: FlowInfoProps) {
             <FlowSearch 
               onSearchChange={handleSearchResults}
               selectedTags={selectedTags}
-              onTagsChange={setSelectedTags}
+              onTagsChange={(tags) => onTagClick(tags[tags.length - 1])}
               availableTags={Array.from(new Set(data.flows.flatMap(flow => flow.tags)))}
             />
 
@@ -70,8 +88,10 @@ export function FlowInfo({ data }: FlowInfoProps) {
                 <FlowCard 
                   key={flow.url}
                   data={flow}
-                  onPin={() => console.log('Pin flow:', flow.url)}
+                  onPin={onPin}
                   onShow={() => console.log('Show flow:', flow.url)}
+                  selectedTags={selectedTags}
+                  onTagClick={onTagClick}
                 />
               ))}
             </div>

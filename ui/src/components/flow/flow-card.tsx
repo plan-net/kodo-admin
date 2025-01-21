@@ -3,6 +3,7 @@ import { Button } from "@/components/ui/button"
 import { useState, useEffect } from "react"
 import { api } from "@/lib/api"
 import { refreshSidebarPinnedFlows } from '@/components/layout/sidebar'
+import { FlowTag } from "./flow-tag"
 
 interface FlowCardProps {
   data: {
@@ -17,9 +18,11 @@ interface FlowCardProps {
     modified: string
   }
   onShow: () => void
+  selectedTags?: string[]
+  onTagClick?: (tag: string) => void
 }
 
-export function FlowCard({ data, onShow }: FlowCardProps) {
+export function FlowCard({ data, onShow, selectedTags = [], onTagClick = () => {} }: FlowCardProps) {
   const [isPinned, setIsPinned] = useState(false)
 
   useEffect(() => {
@@ -52,13 +55,12 @@ export function FlowCard({ data, onShow }: FlowCardProps) {
 
       <div className="flex flex-wrap gap-1.5">
         {data.tags.map((tag) => (
-          <Badge 
+          <FlowTag
             key={tag}
-            variant="secondary"
-            className="px-2 py-0.5 text-xs font-normal"
-          >
-            {tag}
-          </Badge>
+            tag={tag}
+            isSelected={selectedTags.includes(tag)}
+            onClick={onTagClick}
+          />
         ))}
       </div>
 
