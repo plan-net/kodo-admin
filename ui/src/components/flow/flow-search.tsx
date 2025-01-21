@@ -1,7 +1,7 @@
-import { Badge } from "@/components/ui/badge"
 import { useEffect, useState } from "react"
 import { api } from "@/lib/api"
 import { FlowTag } from "./flow-tag"
+import { InputTags } from "@/components/ui/input-tags"
 
 interface FlowSearchProps {
   onSearchChange: (results: { items: any[] }) => void
@@ -73,23 +73,18 @@ export function FlowSearch({ onSearchChange, selectedTags, onTagsChange, availab
     setSearchQuery(value);
   };
 
-  const handleTagClick = async (tag: string) => {
-    // Simplify the tag handling - just call onTagsChange with the tag
-    onTagsChange([tag])
-
+  const handleTagsChange = async (newTags: string[]) => {
+    onTagsChange(newTags);
+    
     // Get base results depending on search query
     const results = searchQuery.trim()
       ? await api.searchFlows(searchQuery)
       : await api.getFlows();
 
-    // Filter results based on the updated selected tags
-    const updatedSelectedTags = selectedTags.includes(tag)
-      ? selectedTags.filter(t => t !== tag)
-      : [...selectedTags, tag];
-
-    if (updatedSelectedTags.length > 0) {
+    // Filter results based on the new tags
+    if (newTags.length > 0) {
       results.items = results.items.filter(flow =>
-        updatedSelectedTags.every(tag => flow.tags.includes(tag))
+        newTags.every(tag => flow.tags.includes(tag))
       );
     }
     
@@ -100,23 +95,22 @@ export function FlowSearch({ onSearchChange, selectedTags, onTagsChange, availab
   return (
     <div className="space-y-4">
       <div className="flex gap-4">
+        {/* Search input - left half */}
         <input
           type="text"
-          placeholder="Fuzzy search over flowname+description+tags"
-          className="flex-1 bg-secondary rounded-lg px-4 py-2 text-foreground"
+          placeholder="Search flows..."
+          className="flex-1 bg-secondary rounded-lg px-4 py-2 text-foreground w-1/2"
           onChange={handleInputChange}
           value={searchQuery}
         />
-      </div>
-      <div className="flex flex-wrap gap-2">
-        {allTags.map((tag) => (
-          <FlowTag
-            key={tag}
-            tag={tag}
-            isSelected={selectedTags.includes(tag)}
-            onClick={handleTagClick}
-          />
-        ))}
+        
+        {/* Tag input - right half */}
+        <InputTags
+          className="w-1/2"
+          placeholder="Add tags..."
+          value={selectedTags}
+          onChange={handleTagsChange}
+        />
       </div>
     </div>
   )
