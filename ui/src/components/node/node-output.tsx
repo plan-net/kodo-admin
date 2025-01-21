@@ -13,6 +13,8 @@ interface NodeOutputProps {
     step: number
     totalSteps: number
   }
+  output: string
+  flowSteps: string[]
   onInterrupt: () => void
   onClear: () => void
   onRetry: () => void
@@ -21,6 +23,8 @@ interface NodeOutputProps {
 export function NodeOutput({ 
   nodeId, 
   status, 
+  output,
+  flowSteps,
   onInterrupt, 
   onClear, 
   onRetry 
@@ -29,8 +33,8 @@ export function NodeOutput({
     output: string;
     flowSteps: string[];
   }>({
-    output: "No output available",
-    flowSteps: []
+    output: output || "No output available",
+    flowSteps: flowSteps || []
   });
   const [error, setError] = useState<string | null>(null);
 

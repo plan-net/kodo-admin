@@ -1,0 +1,142 @@
+{
+  "total": 12,
+  "filtered": 12,
+  "p": 0,
+  "pp": 20,
+  "items": [
+    {
+      "name": "Agent Alpha",
+      "description": "Stealth operations expert with advanced infiltration skills",
+      "organization": "Plan.Net Journey Agentic Node",
+      "author": "tom.hanks@example.com",
+      "tags": ["stealth", "operations", "infiltration"],
+      "created": "2025-01-21T11:20:26.419086+00:00",
+      "modified": "2025-01-21T11:20:26.419086+00:00",
+      "heartbeat": null,
+      "url": "http://localhost:3366/flows/agent-alpha-stealth"
+    },
+    {
+      "name": "Agent Bravo",
+      "description": "Tactical strategist specializing in urban operations",
+      "organization": "Plan.Net Journey Agentic Node",
+      "author": "meryl.streep@example.com",
+      "tags": ["tactical", "strategy", "urban"],
+      "created": "2025-01-22T09:15:26.419086+00:00",
+      "modified": "2025-01-22T09:15:26.419086+00:00",
+      "heartbeat": null,
+      "url": "http://localhost:3366/flows/agent-bravo-tactical"
+    },
+    {
+      "name": "Agent Charlie",
+      "description": "Cybersecurity specialist with AI expertise",
+      "organization": "Plan.Net Journey Agentic Node",
+      "author": "leonardo.dicaprio@example.com",
+      "tags": ["cybersecurity", "tech", "ai"],
+      "created": "2025-01-23T14:30:26.419086+00:00",
+      "modified": "2025-01-23T14:30:26.419086+00:00",
+      "heartbeat": null,
+      "url": "http://localhost:3366/flows/agent-charlie-cyber"
+    },
+    {
+      "name": "Agent Delta",
+      "description": "Intelligence gathering and analysis specialist",
+      "organization": "Plan.Net Journey Agentic Node",
+      "author": "scarlett.johansson@example.com",
+      "tags": ["intelligence", "analysis", "research"],
+      "created": "2025-01-24T16:45:26.419086+00:00",
+      "modified": "2025-01-24T16:45:26.419086+00:00",
+      "heartbeat": null,
+      "url": "http://localhost:3366/flows/agent-delta-intel"
+    },
+    {
+      "name": "Agent Echo",
+      "description": "Logistics and resource management expert",
+      "organization": "Plan.Net Journey Agentic Node",
+      "author": "morgan.freeman@example.com",
+      "tags": ["logistics", "management", "resources"],
+      "created": "2025-01-25T10:20:26.419086+00:00",
+      "modified": "2025-01-25T10:20:26.419086+00:00",
+      "heartbeat": null,
+      "url": "http://localhost:3366/flows/agent-echo-logistics"
+    },
+    {
+      "name": "Agent Foxtrot",
+      "description": "Communications and encryption specialist",
+      "organization": "Plan.Net Journey Agentic Node",
+      "author": "emma.stone@example.com",
+      "tags": ["communications", "encryption", "security"],
+      "created": "2025-01-26T13:10:26.419086+00:00",
+      "modified": "2025-01-26T13:10:26.419086+00:00",
+      "heartbeat": null,
+      "url": "http://localhost:3366/flows/agent-foxtrot-comms"
+    },
+    {
+      "name": "Agent Golf",
+      "description": "Behavioral analysis and profiling expert",
+      "organization": "Plan.Net Journey Agentic Node",
+      "author": "denzel.washington@example.com",
+      "tags": ["behavioral", "analysis", "profiling"],
+      "created": "2025-01-27T15:40:26.419086+00:00",
+      "modified": "2025-01-27T15:40:26.419086+00:00",
+      "heartbeat": null,
+      "url": "http://localhost:3366/flows/agent-golf-behavior"
+    },
+    {
+      "name": "Agent Hotel",
+      "description": "Counterintelligence and security specialist",
+      "organization": "Plan.Net Journey Agentic Node",
+      "author": "cate.blanchett@example.com",
+      "tags": ["counterintelligence", "security", "protection"],
+      "created": "2025-01-28T08:55:26.419086+00:00",
+      "modified": "2025-01-28T08:55:26.419086+00:00",
+      "heartbeat": null,
+      "url": "http://localhost:3366/flows/agent-hotel-counter"
+    },
+    {
+      "name": "Agent India",
+      "description": "Data mining and pattern recognition expert",
+      "organization": "Plan.Net Journey Agentic Node",
+      "author": "brad.pitt@example.com",
+      "tags": ["data-mining", "patterns", "analytics"],
+      "created": "2025-01-29T11:25:26.419086+00:00",
+      "modified": "2025-01-29T11:25:26.419086+00:00",
+      "heartbeat": null,
+      "url": "http://localhost:3366/flows/agent-india-data"
+    },
+    {
+      "name": "Agent Juliet",
+      "description": "Crisis management and negotiation specialist",
+      "organization": "Plan.Net Journey Agentic Node",
+      "author": "viola.davis@example.com",
+      "tags": ["crisis", "negotiation", "management"],
+      "created": "2025-01-30T14:15:26.419086+00:00",
+      "modified": "2025-01-30T14:15:26.419086+00:00",
+      "heartbeat": null,
+      "url": "http://localhost:3366/flows/agent-juliet-crisis"
+    },
+    {
+      "name": "Agent Kilo",
+      "description": "Network infrastructure and systems expert",
+      "organization": "Plan.Net Journey Agentic Node",
+      "author": "robert.downey@example.com",
+      "tags": ["networks", "infrastructure", "systems"],
+      "created": "2025-01-31T16:35:26.419086+00:00",
+      "modified": "2025-01-31T16:35:26.419086+00:00",
+      "heartbeat": null,
+      "url": "http://localhost:3366/flows/agent-kilo-network"
+    },
+    {
+      "name": "Agent Lima",
+      "description": "Risk assessment and mitigation specialist",
+      "organization": "Plan.Net Journey Agentic Node",
+      "author": "charlize.theron@example.com",
+      "tags": ["risk", "assessment", "mitigation"],
+      "created": "2025-02-01T09:45:26.419086+00:00",
+      "modified": "2025-02-01T09:45:26.419086+00:00",
+      "heartbeat": null,
+      "url": "http://localhost:3366/flows/agent-lima-risk"
+    }
+  ],
+  "by": "name, url",
+  "q": null
+}
