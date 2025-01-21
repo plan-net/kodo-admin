@@ -31,7 +31,7 @@ interface FlowData {
 }
 
 interface FlowInfoProps {
-  data: {
+  data: {6
     registryName: string
     registryDescription: string
     flows: Array<{
@@ -61,9 +61,15 @@ export function FlowInfo({
 }: FlowInfoProps) {
   const [selectedAction, setSelectedAction] = useState('Welcome')
   const [filteredFlows, setFilteredFlows] = useState(data?.flows || [])
+  const [selectedFlow, setSelectedFlow] = useState<FlowData | null>(null)
 
   const handleSearchResults = (results: { items: any[] }) => {
     setFilteredFlows(results.items)
+  }
+
+  const handleShowFlow = (flow: FlowData) => {
+    setSelectedFlow(flow)
+    setSelectedAction('Run')
   }
 
   const renderContent = () => {
@@ -89,7 +95,7 @@ export function FlowInfo({
                   key={flow.url}
                   data={flow}
                   onPin={onPin}
-                  onShow={() => console.log('Show flow:', flow.url)}
+                  onShow={() => handleShowFlow(flow)}
                   selectedTags={selectedTags}
                   onTagClick={onTagClick}
                 />
@@ -102,8 +108,8 @@ export function FlowInfo({
         return (
           <>
             <FlowHeader 
-              name={data.registryName}
-              description={data.registryDescription}
+              name={selectedFlow?.name || data.registryName}
+              description={selectedFlow?.description || data.registryDescription}
             />
             <div className="grid grid-cols-2 gap-6">
               <NodeInput 
@@ -111,7 +117,7 @@ export function FlowInfo({
                 onClear={() => console.log('Clear input')}
               />
               <NodeOutput
-                nodeId={data.flows[0]?.id || ''}
+                nodeId={selectedFlow?.id || ''}
                 status={{
                   running: true,
                   step: 2,
@@ -147,8 +153,8 @@ export function FlowInfo({
         return (
           <>
             <FlowHeader 
-              name={data.registryName}
-              description={data.registryDescription}
+              name={selectedFlow?.name || data.registryName}
+              description={selectedFlow?.description || data.registryDescription}
             />
             <div className="mt-8">
               <div className="flex items-center justify-between mb-4">
@@ -171,11 +177,11 @@ export function FlowInfo({
         return (
           <>
             <FlowHeader 
-              name={data.registryName}
-              description={data.registryDescription}
+              name={selectedFlow?.name || data.registryName}
+              description={selectedFlow?.description || data.registryDescription}
             />
             <div className="rounded-lg border border-border bg-background p-6 w-full">
-              <NodeLogs nodeId={data.flows[0]?.id || ''} />
+              <NodeLogs nodeId={selectedFlow?.id || ''} />
             </div>
           </>
         )
@@ -196,8 +202,8 @@ export function FlowInfo({
         return (
           <>
             <FlowHeader 
-              name={data.registryName}
-              description={data.registryDescription}
+              name={selectedFlow?.name || data.registryName}
+              description={selectedFlow?.description || data.registryDescription}
             />
             <div className="rounded-lg border border-border bg-background p-6 w-full">
               <div className="flex items-center justify-between mb-8">

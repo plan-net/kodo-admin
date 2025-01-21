@@ -17,7 +17,7 @@ interface FlowCardProps {
     created: string
     modified: string
   }
-  onShow: () => void
+  onShow: (data: { url: string; name: string; description: string; tags: string[]; price: number; author: string; organization: string; created: string; modified: string }) => void
   selectedTags?: string[]
   onTagClick?: (tag: string) => void
 }
@@ -83,7 +83,7 @@ export function FlowCard({ data, onShow, selectedTags = [], onTagClick = () => {
           <Button
             variant="default"
             size="sm"
-            onClick={onShow}
+            onClick={() => onShow(data)}
             className="w-20"
           >
             Show

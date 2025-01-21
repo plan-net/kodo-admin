@@ -3,14 +3,22 @@
 interface FlowHeaderProps {
   name: string
   description: string
+  subtitle?: string
 }
 
-export function FlowHeader({ name, description }: FlowHeaderProps) {
+export function FlowHeader({ name, description, subtitle }: FlowHeaderProps) {
   return (
     <div className="space-y-4">
-      <h1 className="text-2xl font-semibold tracking-tight">
-        {name}
-      </h1>
+      <div className="space-y-1">
+        <h1 className="text-2xl font-semibold tracking-tight">
+          {name}
+        </h1>
+        {subtitle && (
+          <p className="text-sm text-muted-foreground">
+            {subtitle}
+          </p>
+        )}
+      </div>
       <div className="space-y-2">
         <p className="text-muted-foreground">
           {description}

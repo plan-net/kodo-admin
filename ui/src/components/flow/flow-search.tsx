@@ -53,6 +53,18 @@ export function FlowSearch({ onSearchChange, selectedTags, onTagsChange, availab
       results.filtered = results.items.length;
     }
 
+    // Get pinned flows and reorder results
+    const pinnedUrls = await api.getPinnedFlows().then(res => res.items.map(flow => flow.url));
+    
+    // Sort items so pinned flows appear first
+    results.items.sort((a, b) => {
+      const isPinnedA = pinnedUrls.includes(a.url);
+      const isPinnedB = pinnedUrls.includes(b.url);
+      if (isPinnedA && !isPinnedB) return -1;
+      if (!isPinnedA && isPinnedB) return 1;
+      return 0;
+    });
+
     onSearchChange(results);
   };
 
