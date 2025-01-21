@@ -98,4 +98,42 @@ export const api = {
         items: results.map(result => result.item)
       };
     }),
+
+  // Pin a flow by its URL
+  pinFlow: (flowUrl: string) =>
+    Promise.delay(300).then(() => {
+      const pinnedFlows = JSON.parse(localStorage.getItem('pinnedFlows') || '[]');
+      if (!pinnedFlows.includes(flowUrl)) {
+        pinnedFlows.push(flowUrl);
+        localStorage.setItem('pinnedFlows', JSON.stringify(pinnedFlows));
+      }
+      return { success: true };
+    }),
+
+  // Unpin a flow by its URL
+  unpinFlow: (flowUrl: string) =>
+    Promise.delay(300).then(() => {
+      const pinnedFlows = JSON.parse(localStorage.getItem('pinnedFlows') || '[]');
+      const updatedFlows = pinnedFlows.filter((url: string) => url !== flowUrl);
+      localStorage.setItem('pinnedFlows', JSON.stringify(updatedFlows));
+      return { success: true };
+    }),
+
+  // Get all pinned flows
+  getPinnedFlows: () =>
+    Promise.delay(300).then(() => {
+      const pinnedUrls = JSON.parse(localStorage.getItem('pinnedFlows') || '[]');
+      const pinnedFlows = flowsData.items.filter(flow => pinnedUrls.includes(flow.url));
+      return {
+        total: pinnedFlows.length,
+        items: pinnedFlows
+      };
+    }),
+
+  // Check if a flow is pinned
+  isFlowPinned: (flowUrl: string) =>
+    Promise.delay(300).then(() => {
+      const pinnedFlows = JSON.parse(localStorage.getItem('pinnedFlows') || '[]');
+      return pinnedFlows.includes(flowUrl);
+    }),
 }; 

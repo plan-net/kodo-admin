@@ -18,17 +18,30 @@ export function Sidebar() {
   const pathname = usePathname()
   const searchParams = useSearchParams()
   const router = useRouter()
-  const [flows, setFlows] = useState<Flow[]>([])
+  const [pinnedFlows, setPinnedFlows] = useState<Flow[]>([])
+  const [totalFlowCount, setTotalFlowCount] = useState(0)
   const [isLoading, setIsLoading] = useState(true)
   const [isCollapsed, setIsCollapsed] = useState(false)
+  const [refreshTrigger, setRefreshTrigger] = useState(0)
   
   const selectedFlowId = searchParams.get('flowId')
+  
+  const refreshPinnedFlows = () => {
+    setRefreshTrigger(prev => prev + 1)
+  }
   
   useEffect(() => {
     const fetchFlows = async () => {
       try {
-        const response = await api.getFlows()
-        setFlows(response.items)
+        // Fetch both total flows and pinned flows
+        const [totalFlows, pinnedFlowsResponse] = await Promise.all([
+          api.getFlows(),
+          api.getPinnedFlows()
+        ])
+        console.log(totalFlows);
+        console.log(pinnedFlowsResponse);
+        setTotalFlowCount(totalFlows.items.length)
+        setPinnedFlows(pinnedFlowsResponse.items)
       } catch (error) {
         console.error('Failed to fetch flows:', error)
       } finally {
@@ -37,6 +50,16 @@ export function Sidebar() {
     }
 
     fetchFlows()
+  }, [refreshTrigger])
+
+  // Add event listener for refresh
+  useEffect(() => {
+    const handleRefresh = () => {
+      setRefreshTrigger(prev => prev + 1)
+    }
+
+    window.addEventListener('refresh-sidebar', handleRefresh)
+    return () => window.removeEventListener('refresh-sidebar', handleRefresh)
   }, [])
 
   const handleFlowClick = (flowUrl: string) => {
@@ -45,7 +68,10 @@ export function Sidebar() {
   }
 
   return (
-    <div className={`${isCollapsed ? 'w-16' : 'w-64'} h-screen text-gray-100 fixed left-0 top-0 flex flex-col border-r border-border/50 transition-all duration-300`}>
+    <div 
+      data-sidebar 
+      className={`${isCollapsed ? 'w-16' : 'w-64'} h-screen text-gray-100 fixed left-0 top-0 flex flex-col border-r border-border/50 transition-all duration-300`}
+    >
       <div className="p-4 flex-1">
         {/* Logo section with toggle button */}
         <div className="flex items-center gap-2 mb-6 pb-4 border-b border-border/50 relative">
@@ -63,9 +89,13 @@ export function Sidebar() {
           </button>
         </div>
         
-        {/* Flows section */}
+        {/* Pinned Flows section */}
         <div>
-          {!isCollapsed && <h2 className="text-xs font-medium text-muted-foreground uppercase mb-2 px-2">Flows</h2>}
+          {!isCollapsed && (
+            <h2 className="text-xs font-medium text-muted-foreground uppercase mb-2 px-2">
+              Pinned ({pinnedFlows.length}/{totalFlowCount})
+            </h2>
+          )}
           <nav className="space-y-1 bg-card-background p-2 rounded-lg border border-border/50">
             {isLoading ? (
               <div className="space-y-2">
@@ -73,8 +103,8 @@ export function Sidebar() {
                   <div key={n} className="h-10 bg-gray-800/20 rounded-lg animate-pulse" />
                 ))}
               </div>
-            ) : (
-              flows.map((flow) => (
+            ) : pinnedFlows.length > 0 ? (
+              pinnedFlows.map((flow) => (
                 <button
                   key={flow.url}
                   onClick={() => handleFlowClick(flow.url)}
@@ -100,6 +130,10 @@ export function Sidebar() {
                   </div>
                 </button>
               ))
+            ) : (
+              <div className="text-sm text-muted-foreground text-center py-2">
+                No pinned flows
+              </div>
             )}
           </nav>
         </div>
@@ -134,4 +168,9 @@ export function Sidebar() {
       </div>
     </div>
   )
+}
+
+// Simplify the refresh function
+export const refreshSidebarPinnedFlows = () => {
+  window.dispatchEvent(new Event('refresh-sidebar'))
 } 

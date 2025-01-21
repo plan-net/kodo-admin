@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react'
 import { Sidebar } from '@/components/layout/sidebar'
 import { FlowInfo } from '@/components/flow/flow-info'
 import { api } from '@/lib/api'
+import { refreshSidebarPinnedFlows } from '@/components/layout/sidebar'
 
 export default function DashboardPage() {
   const [pinnedFlows, setPinnedFlows] = useState<any[]>([])
@@ -17,13 +18,19 @@ export default function DashboardPage() {
   }, [])
 
   const handlePin = async (flow: any) => {
-    const isPinned = pinnedFlows.some(f => f.url === flow.url)
-    if (isPinned) {
-      await api.unpinFlow(flow.url)
-      setPinnedFlows(prev => prev.filter(f => f.url !== flow.url))
-    } else {
-      await api.pinFlow(flow)
-      setPinnedFlows(prev => [...prev, flow])
+    try {
+      const isPinned = pinnedFlows.some(f => f.url === flow.url)
+      if (isPinned) {
+        await api.unpinFlow(flow.url)
+        setPinnedFlows(prev => prev.filter(f => f.url !== flow.url))
+      } else {
+        await api.pinFlow(flow.url)
+        setPinnedFlows(prev => [...prev, flow])
+      }
+      // Trigger sidebar refresh
+      refreshSidebarPinnedFlows()
+    } catch (error) {
+      console.error('Error handling pin:', error)
     }
   }
 
