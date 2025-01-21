@@ -245,6 +245,7 @@ export function FlowInfo({
         <TopFlowBar
           selectedAction={selectedAction}
           setSelectedAction={setSelectedAction}
+          hasSelectedFlow={!!selectedFlow}
         />
         <div className="py-8">
           {renderContent()}

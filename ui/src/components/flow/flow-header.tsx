@@ -21,28 +21,30 @@ export function FlowHeader({ name, description, subtitle }: FlowHeaderProps) {
       </div>
       <div className="space-y-2">
         <p className="text-muted-foreground">
-          {description}
+          {description || "Select a flow to see its information"}
         </p>
-        <div className="flex gap-4 text-sm">
-          <a 
-            href="#" 
-            className="text-blue-500 hover:text-blue-400 hover:underline"
-          >
-            Terms and Conditions
-          </a>
-          <a 
-            href="#" 
-            className="text-blue-500 hover:text-blue-400 hover:underline"
-          >
-            Privacy Policy
-          </a>
-          <a 
-            href="#" 
-            className="text-blue-500 hover:text-blue-400 hover:underline"
-          >
-            Customer Support
-          </a>
-        </div>
+        {description && (
+          <div className="flex gap-4 text-sm">
+            <a 
+              href="#" 
+              className="text-blue-500 hover:text-blue-400 hover:underline"
+            >
+              Terms and Conditions
+            </a>
+            <a 
+              href="#" 
+              className="text-blue-500 hover:text-blue-400 hover:underline"
+            >
+              Privacy Policy
+            </a>
+            <a 
+              href="#" 
+              className="text-blue-500 hover:text-blue-400 hover:underline"
+            >
+              Customer Support
+            </a>
+          </div>
+        )}
       </div>
     </div>
   )
