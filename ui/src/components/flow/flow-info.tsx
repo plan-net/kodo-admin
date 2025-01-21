@@ -28,6 +28,23 @@ interface FlowData {
   organization: string
   created: string
   modified: string
+  logs: Array<{
+    timestamp: string
+    level: string
+    message: string
+  }>
+  requests: Array<{
+    id: string
+    timestamp: string
+    user: string
+    role: string
+    input: string
+    inputTokens: number
+    output: string
+    outputTokens: number
+    status: string
+    kind: string
+  }>
 }
 
 interface FlowInfoProps {
@@ -128,28 +145,29 @@ export function FlowInfo({
                 onRetry={() => console.log('Retry')}
               />
             </div>
+            
+            <div className="mt-8">
+              <div className="flex items-center justify-between mb-4">
+                <h2 className="text-xl font-semibold">Recent Requests</h2>
+                <div className="flex items-center gap-4">
+                  <button 
+                    className="flex items-center gap-2 bg-secondary px-4 py-2 rounded-lg hover:bg-secondary/80"
+                    onClick={() => setSelectedAction('Requests')}
+                  >
+                    <span>View All</span>
+                  </button>
+                </div>
+              </div>
+              <RequestsTable 
+                data={{ 
+                  requests: (selectedFlow?.requests || []).slice(0, 3) 
+                }} 
+              />
+            </div>
           </>
         )
 
       case 'Requests':
-        const requestsData = {
-          requests: [
-            {
-              id: 'req-1',
-              timestamp: '2024-11-25T04:20:00',
-              user: 'Jane Doe',
-              role: 'Admin',
-              input: 'Create a report...',
-              inputTokens: 324,
-              output: '...',
-              outputTokens: 156,
-              status: 'Running',
-              kind: 'Single Node'
-            },
-            // ... more mock data as needed
-          ]
-        }
-
         return (
           <>
             <FlowHeader 
@@ -168,7 +186,7 @@ export function FlowInfo({
                   </button>
                 </div>
               </div>
-              <RequestsTable data={requestsData} />
+              <RequestsTable data={{ requests: selectedFlow?.requests || [] }} />
             </div>
           </>
         )
@@ -181,7 +199,37 @@ export function FlowInfo({
               description={selectedFlow?.description || data.registryDescription}
             />
             <div className="rounded-lg border border-border bg-background p-6 w-full">
-              <NodeLogs nodeId={selectedFlow?.id || ''} />
+              <div className="flex items-center justify-between mb-6">
+                <h2 className="text-xl font-semibold">Logs</h2>
+              </div>
+              {selectedFlow?.logs ? (
+                <div className="space-y-4">
+                  {selectedFlow.logs.map((log, index) => (
+                    <div 
+                      key={index} 
+                      className={`p-3 rounded-lg ${
+                        log.level === 'error' ? 'bg-red-500/10 text-red-500' :
+                        log.level === 'warning' ? 'bg-yellow-500/10 text-yellow-500' :
+                        'bg-secondary/50'
+                      }`}
+                    >
+                      <div className="flex items-center justify-between">
+                        <span className="text-sm font-medium">{new Date(log.timestamp).toLocaleString()}</span>
+                        <Badge variant={
+                          log.level === 'error' ? 'destructive' :
+                          log.level === 'warning' ? 'warning' :
+                          'secondary'
+                        }>
+                          {log.level}
+                        </Badge>
+                      </div>
+                      <p className="mt-2">{log.message}</p>
+                    </div>
+                  ))}
+                </div>
+              ) : (
+                <NodeLogs nodeId={selectedFlow?.id || ''} />
+              )}
             </div>
           </>
         )
