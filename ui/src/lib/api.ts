@@ -11,8 +11,10 @@ import flowsData from '@/data/flows.json';
 import Fuse from 'fuse.js';
 import {client, flowsFlows} from "../../ui/src/lib/gen-api";
 
+const reg_url = process.env.REGISTRY_URL || 'http://localhost:3367'
+
 client.setConfig({
-    baseUrl: 'http://localhost:3366',
+    baseUrl:reg_url,
 })
 
 export const api = {
