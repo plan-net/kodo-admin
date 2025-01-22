@@ -45,8 +45,8 @@ const InputTags = React.forwardRef<HTMLInputElement, InputTagsProps>(
           className
         )}
       >
-        {value.map((item) => (
-          <Badge key={item} variant="secondary" className="bg-card text-foreground border border-border px-2 py-1 rounded-md text-sm">
+        {value.map((item, index) => (
+          <Badge key={index} variant="secondary" className="bg-card text-foreground border border-border px-2 py-1 rounded-md text-sm">
             {item}
             <Button
               variant="ghost"

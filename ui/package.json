@@ -5,7 +5,7 @@
   "scripts": {
     "dev": "next dev --turbo -p 3002",
     "build": "next build",
-    "start": "next start",
+    "start": "next start -p 3002",
     "lint": "next lint",
     "gen-api": "npx @hey-api/openapi-ts -c @hey-api/client-fetch -i http://localhost:3366/docs/openapi.json -o ui/src/lib/gen-api"
   },
