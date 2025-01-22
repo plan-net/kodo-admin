@@ -13,6 +13,9 @@ import {client, flowsFlows} from "../../ui/src/lib/gen-api";
 
 const reg_url = process.env.REGISTRY_URL || 'http://localhost:3367'
 
+confirm('env.REGISTRY_URL :' + reg_url)
+console.log('reg_url :', reg_url)
+
 client.setConfig({
     baseUrl:reg_url,
 })
