@@ -9,6 +9,11 @@ import logsData from '@/data/logs.json'
 import outputsData from '@/data/outputs.json';
 import flowsData from '@/data/flows.json';
 import Fuse from 'fuse.js';
+import {client, flowsFlows} from "../../ui/src/lib/gen-api";
+
+client.setConfig({
+    baseUrl: 'http://localhost:3366',
+})
 
 export const api = {
   // Get list of all nodes with basic info
@@ -68,7 +73,12 @@ export const api = {
 
   // Get list of all flows
   getFlows: () =>
-    Promise.delay(500).then(() => {
+    Promise.delay(0).then(async () => {
+
+        // todo: to get mocks comment these 2 lines
+        const resp = await flowsFlows()
+        const flowsData = resp.data;
+
       const flowsWithLogsAndRequests = flowsData.items.map(flow => ({
         ...flow,
         logs: [
