@@ -343,7 +343,7 @@ export function FlowInfo({
               name={selectedFlow?.name || data.registryName}
               description={selectedFlow?.description || data.registryDescription}
             />
-            <div className="rounded-lg border border-border bg-background p-6 w-full">
+            <div className="rounded-lg border border-border bg-background p-6 w-full" style={{marginBottom: 20}}>
               <div className="flex items-center justify-between mb-8">
                 <h2 className="text-xl font-semibold">Usage Over Time</h2>
                 <ExportButton onExport={() => {}} />
