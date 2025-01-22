@@ -6,43 +6,72 @@ import { useEffect, useState } from 'react'
 import { LayoutDashboard, Activity, ChevronLeft, ChevronRight } from 'lucide-react'
 import { api } from '@/lib/api'
 
-interface Node {
-  id: string
+interface Flow {
   name: string
-  status: string
+  description: string
+  url: string
+  heartbeat: string | null
+  tags: string[]
 }
 
 export function Sidebar() {
   const pathname = usePathname()
   const searchParams = useSearchParams()
   const router = useRouter()
-  const [nodes, setNodes] = useState<Node[]>([])
+  const [pinnedFlows, setPinnedFlows] = useState<Flow[]>([])
+  const [totalFlowCount, setTotalFlowCount] = useState(0)
   const [isLoading, setIsLoading] = useState(true)
   const [isCollapsed, setIsCollapsed] = useState(false)
+  const [refreshTrigger, setRefreshTrigger] = useState(0)
   
-  const selectedNodeId = searchParams.get('nodeId')
+  const selectedFlowId = searchParams.get('flowId')
+  
+  const refreshPinnedFlows = () => {
+    setRefreshTrigger(prev => prev + 1)
+  }
   
   useEffect(() => {
-    const fetchNodes = async () => {
+    const fetchFlows = async () => {
       try {
-        const response = await api.getNodes()
-        setNodes(response.nodes)
+        // Fetch both total flows and pinned flows
+        const [totalFlows, pinnedFlowsResponse] = await Promise.all([
+          api.getFlows(),
+          api.getPinnedFlows()
+        ])
+        console.log(totalFlows);
+        console.log(pinnedFlowsResponse);
+        setTotalFlowCount(totalFlows.items.length)
+        setPinnedFlows(pinnedFlowsResponse.items)
       } catch (error) {
-        console.error('Failed to fetch nodes:', error)
+        console.error('Failed to fetch flows:', error)
       } finally {
         setIsLoading(false)
       }
     }
 
-    fetchNodes()
+    fetchFlows()
+  }, [refreshTrigger])
+
+  // Add event listener for refresh
+  useEffect(() => {
+    const handleRefresh = () => {
+      setRefreshTrigger(prev => prev + 1)
+    }
+
+    window.addEventListener('refresh-sidebar', handleRefresh)
+    return () => window.removeEventListener('refresh-sidebar', handleRefresh)
   }, [])
 
-  const handleNodeClick = (nodeId: string) => {
-    router.push(`/?nodeId=${nodeId}`)
+  const handleFlowClick = (flowUrl: string) => {
+    const flowId = flowUrl.split('/').pop()
+    router.push(`/?flowId=${flowId}`)
   }
 
   return (
-    <div className={`${isCollapsed ? 'w-16' : 'w-64'} h-screen text-gray-100 fixed left-0 top-0 flex flex-col border-r border-border/50 transition-all duration-300`}>
+    <div 
+      data-sidebar 
+      className={`${isCollapsed ? 'w-16' : 'w-64'} h-screen text-gray-100 fixed left-0 top-0 flex flex-col border-r border-border/50 transition-all duration-300`}
+    >
       <div className="p-4 flex-1">
         {/* Logo section with toggle button */}
         <div className="flex items-center gap-2 mb-6 pb-4 border-b border-border/50 relative">
@@ -60,9 +89,13 @@ export function Sidebar() {
           </button>
         </div>
         
-        {/* Nodes section */}
+        {/* Pinned Flows section */}
         <div>
-          {!isCollapsed && <h2 className="text-xs font-medium text-muted-foreground uppercase mb-2 px-2">Nodes</h2>}
+          {!isCollapsed && (
+            <h2 className="text-xs font-medium text-muted-foreground uppercase mb-2 px-2">
+              Pinned ({pinnedFlows.length}/{totalFlowCount})
+            </h2>
+          )}
           <nav className="space-y-1 bg-card-background p-2 rounded-lg border border-border/50">
             {isLoading ? (
               <div className="space-y-2">
@@ -70,13 +103,13 @@ export function Sidebar() {
                   <div key={n} className="h-10 bg-gray-800/20 rounded-lg animate-pulse" />
                 ))}
               </div>
-            ) : (
-              nodes.map((node) => (
+            ) : pinnedFlows.length > 0 ? (
+              pinnedFlows.map((flow) => (
                 <button
-                  key={node.id}
-                  onClick={() => handleNodeClick(node.id)}
+                  key={flow.url}
+                  onClick={() => handleFlowClick(flow.url)}
                   className={`w-full text-left px-3 py-2 rounded-lg text-sm transition-colors ${
-                    selectedNodeId === node.id
+                    selectedFlowId === flow.url.split('/').pop()
                       ? 'bg-card-hover text-foreground'
                       : 'hover:bg-card-hover/50 text-muted-foreground'
                   }`}
@@ -84,19 +117,23 @@ export function Sidebar() {
                   <div className="flex items-center justify-between">
                     {isCollapsed ? (
                       <span className={`w-2 h-2 rounded-full mx-auto ${
-                        node.status === 'Running' ? 'bg-green-500' : 'bg-red-500'
+                        flow.heartbeat ? 'bg-green-500' : 'bg-red-500'
                       }`} />
                     ) : (
                       <>
-                        <span>{node.name}</span>
+                        <span>{flow.name}</span>
                         <span className={`w-2 h-2 rounded-full ${
-                          node.status === 'Running' ? 'bg-green-500' : 'bg-red-500'
+                          flow.heartbeat ? 'bg-green-500' : 'bg-red-500'
                         }`} />
                       </>
                     )}
                   </div>
                 </button>
               ))
+            ) : (
+              <div className="text-sm text-muted-foreground text-center py-2">
+                No pinned flows
+              </div>
             )}
           </nav>
         </div>
@@ -108,7 +145,7 @@ export function Sidebar() {
           <button
             onClick={() => router.push('/')}
             className={`w-full text-left px-3 py-2 rounded-lg text-sm flex items-center gap-2 transition-colors ${
-              !selectedNodeId 
+              !selectedFlowId 
                 ? 'bg-card-hover text-foreground' 
                 : 'hover:bg-card-hover/50 text-muted-foreground'
             }`}
@@ -131,4 +168,9 @@ export function Sidebar() {
       </div>
     </div>
   )
+}
+
+// Simplify the refresh function
+export const refreshSidebarPinnedFlows = () => {
+  window.dispatchEvent(new Event('refresh-sidebar'))
 } 

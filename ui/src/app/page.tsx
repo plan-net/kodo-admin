@@ -1,75 +1,76 @@
 'use client'
 
 import { useEffect, useState } from 'react'
-import { RequestsTable } from '@/components/node/requests-table'
-import { NodeRevenueStats } from '@/components/node/revenue-stats'
-import { NodeRevenueChart } from '@/components/node/revenue-chart'
 import { Sidebar } from '@/components/layout/sidebar'
-import { NodeInfo } from '@/components/node/node-info'
+import { FlowInfo } from '@/components/flow/flow-info'
 import { api } from '@/lib/api'
-import { useSearchParams } from 'next/navigation'
-import TestComponent from '@/components/ui/test-component'
+import { refreshSidebarPinnedFlows } from '@/components/layout/sidebar'
 
 export default function DashboardPage() {
-  const searchParams = useSearchParams()
-  const selectedNodeId = searchParams.get('nodeId')
-  
-  const [data, setData] = useState({
-    nodes: null,
-    requests: null,
-    stats: null,
-    selectedNode: null,
-  })
+  const [pinnedFlows, setPinnedFlows] = useState<any[]>([])
+  const [selectedTags, setSelectedTags] = useState<string[]>([])
 
   useEffect(() => {
-    const fetchData = async () => {
-      if (selectedNodeId) {
-        const nodeDetails = await api.getNodeDetails(selectedNodeId)
-        setData(prev => ({ ...prev, selectedNode: nodeDetails }))
-      } else {
-        const [nodes, requests, stats] = await Promise.all([
-          api.getNodes(),
-          api.getRequestsData(),
-          api.getStatsData(),
-        ])
-        setData({ nodes, requests, stats, selectedNode: null })
-      }
+    const fetchPinnedFlows = async () => {
+      const data = await api.getPinnedFlows()
+      setPinnedFlows(data.items)
     }
-    fetchData()
-  }, [selectedNodeId])
+    fetchPinnedFlows()
+  }, [])
+
+  const handlePin = async (flow: any) => {
+    try {
+      const isPinned = pinnedFlows.some(f => f.url === flow.url)
+      if (isPinned) {
+        await api.unpinFlow(flow.url)
+        setPinnedFlows(prev => prev.filter(f => f.url !== flow.url))
+      } else {
+        await api.pinFlow(flow.url)
+        setPinnedFlows(prev => [...prev, flow])
+      }
+      // Trigger sidebar refresh
+      refreshSidebarPinnedFlows()
+    } catch (error) {
+      console.error('Error handling pin:', error)
+    }
+  }
+
+  const handleTagsChange = (newTags: string[]) => {
+    setSelectedTags(newTags)
+  }
 
   return (
     <div className="flex">
       <Sidebar />
 
-      <main className="flex-1 ml-64 min-h-screen text-gray-100">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <main className="flex-1 ml-[250px] min-h-screen text-gray-100">
+        <div className="max-w-[1920px] mx-auto px-4 sm:px-6 lg:px-8">
           <div className="p-8 space-y-8">
-            <TestComponent/>
-
-            {selectedNodeId ? (
-              <NodeInfo data={data.selectedNode} />
-            ) : (
-              <>
-                <div className="space-y-4">
-                  <h1 className="text-2xl font-bold">Dashboard</h1>
-                  {/*todo: should be fixed*/}
-                  {/*<NodeStatus data={data.nodes} />*/}
-                </div>
-                
-                <div className="grid gap-4 md:grid-cols-3">
-                  <NodeRevenueStats data={data.stats} />
-                </div>
-
-                <div className="grid gap-4">
-                  <RequestsTable data={data.requests} />
-                </div>
-
-                <div className="grid gap-4">
-                  <NodeRevenueChart data={data.stats?.revenue} />
-                </div>
-              </>
-            )}
+            <FlowInfo 
+              data={{
+                registryName: "Registry name",
+                registryDescription: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+                flows: pinnedFlows.map(flow => ({
+                  id: flow.url.split('/').pop() || '',
+                  name: flow.name,
+                  description: flow.description,
+                  tags: flow.tags,
+                  price: 42.00,
+                  author: flow.author,
+                  organization: flow.organization,
+                  created: flow.created,
+                  modified: flow.modified,
+                  isPinned: true
+                })) || []
+              }}
+              onPin={handlePin}
+              selectedTags={selectedTags}
+              onTagClick={(tag) => handleTagsChange(
+                selectedTags.includes(tag)
+                  ? selectedTags.filter(t => t !== tag)
+                  : [...selectedTags, tag]
+              )}
+            />
           </div>
         </div>
       </main>
