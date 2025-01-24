@@ -11,7 +11,7 @@ import flowsData from '@/data/flows.json';
 import Fuse from 'fuse.js';
 import {client, flowsFlows} from "../../ui/src/lib/gen-api";
 
-const reg_url = process.env.REGISTRY_URL || 'http://localhost:3367'
+const reg_url = process.env.NEXT_PUBLIC_REGISTRY_URL || 'http://localhost:3367'
 
 console.log('env.REGISTRY_URL :' + reg_url)
 console.log('reg_url :', reg_url)
