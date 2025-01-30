@@ -5,6 +5,7 @@ import { Sidebar } from '@/components/layout/sidebar'
 import { FlowInfo } from '@/components/flow/flow-info'
 import { api } from '@/lib/api'
 import { refreshSidebarPinnedFlows } from '@/components/layout/sidebar'
+import  NextAuthProvider  from '@/app/next-auth-provider'
 
 export default function DashboardPage() {
   const [pinnedFlows, setPinnedFlows] = useState<any[]>([])
@@ -40,40 +41,42 @@ export default function DashboardPage() {
   }
 
   return (
-    <div className="flex">
-      <Sidebar />
+    <NextAuthProvider>
+      <div className="flex">
+        <Sidebar />
 
-      <main className="flex-1 ml-[250px] min-h-screen text-gray-100">
-        <div className="max-w-[1920px] mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="p-8 space-y-8">
-            <FlowInfo 
-              data={{
-                registryName: "Registry name",
-                registryDescription: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
-                flows: pinnedFlows.map(flow => ({
-                  id: flow.url.split('/').pop() || '',
-                  name: flow.name,
-                  description: flow.description,
-                  tags: flow.tags,
-                  price: 42.00,
-                  author: flow.author,
-                  organization: flow.organization,
-                  created: flow.created,
-                  modified: flow.modified,
-                  isPinned: true
-                })) || []
-              }}
-              onPin={handlePin}
-              selectedTags={selectedTags}
-              onTagClick={(tag) => handleTagsChange(
-                selectedTags.includes(tag)
-                  ? selectedTags.filter(t => t !== tag)
-                  : [...selectedTags, tag]
-              )}
-            />
+        <main className="flex-1 ml-[250px] min-h-screen text-gray-100">
+          <div className="max-w-[1920px] mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="p-8 space-y-8">
+              <FlowInfo
+                data={{
+                  registryName: "Registry name",
+                  registryDescription: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+                  flows: pinnedFlows.map(flow => ({
+                    id: flow.url.split('/').pop() || '',
+                    name: flow.name,
+                    description: flow.description,
+                    tags: flow.tags,
+                    price: 42.00,
+                    author: flow.author,
+                    organization: flow.organization,
+                    created: flow.created,
+                    modified: flow.modified,
+                    isPinned: true
+                  })) || []
+                }}
+                onPin={handlePin}
+                selectedTags={selectedTags}
+                onTagClick={(tag) => handleTagsChange(
+                  selectedTags.includes(tag)
+                    ? selectedTags.filter(t => t !== tag)
+                    : [...selectedTags, tag]
+                )}
+              />
+            </div>
           </div>
-        </div>
-      </main>
-    </div>
+        </main>
+      </div>
+    </NextAuthProvider>
   )
 }
