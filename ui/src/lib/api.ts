@@ -9,6 +9,7 @@ import logsData from '@/data/logs.json'
 import outputsData from '@/data/outputs.json';
 import flowsData from '@/data/flows.json';
 import Fuse from 'fuse.js';
+import { getSession } from 'next-auth/react';
 import {client, flowsFlows} from "../../ui/src/lib/gen-api";
 
 const reg_url = process.env.NEXT_PUBLIC_REGISTRY_URL || 'http://localhost:3367'
@@ -19,6 +20,13 @@ console.log('reg_url :', reg_url)
 client.setConfig({
     baseUrl:reg_url,
 })
+
+
+client.interceptors.request.use(async (request, options) => {
+  const session = await getSession();
+  request.headers.set('Authorization', 'Bearer '  + (session as any).accessToken); 
+  return request;
+});
 
 export const api = {
   // Get list of all nodes with basic info
