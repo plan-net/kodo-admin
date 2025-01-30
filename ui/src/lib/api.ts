@@ -10,7 +10,8 @@ import outputsData from '@/data/outputs.json';
 import Fuse from 'fuse.js';
 import {client, flowsFlows} from "../../ui/src/lib/gen-api";
 
-const reg_url = process.env.NEXT_PUBLIC_REGISTRY_URL || 'http://localhost:3367'
+const reg_url = process.env.NEXT_PUBLIC_REGISTRY_URL || 'http://localhost:3371'
+const reg_url2 = 'http://localhost:3371'
 
 console.log('env.REGISTRY_URL :' + reg_url)
 console.log('reg_url :', reg_url)
@@ -198,6 +199,8 @@ export const api = {
         };
     }),
 
+    
+
   // Get all unique tags from flows
   getAllFlowTags: () =>
     Promise.delay(300).then(() => {
@@ -265,4 +268,29 @@ export const api = {
       const pinnedFlows = JSON.parse(localStorage.getItem('pinnedFlows') || '[]');
       return pinnedFlows.includes(flowUrl);
     }),
+
+  // Get streaming output for a specific flow
+  getFlowOutput: (flowId: string, onData: (data: string) => void) => {
+    //to do replace this with id after starting flow from gui
+    const url = `${reg_url2}/flow/679c05162c614df1145d5f63/stdout`;
+    
+    // Create EventSource for server-sent events
+    const eventSource = new EventSource(url);
+    
+    // Handle incoming messages
+    eventSource.onmessage = (event) => {
+      onData(event.data);
+    };
+    
+    // Handle errors
+    eventSource.onerror = (error) => {
+      console.error('Error reading flow output:', error);
+      eventSource.close();
+    };
+    
+    // Return cleanup function to close connection
+    return () => {
+      eventSource.close();
+    };
+  },
 }; 

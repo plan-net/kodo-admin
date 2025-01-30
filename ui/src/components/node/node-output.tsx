@@ -39,25 +39,31 @@ export function NodeOutput({
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    const fetchOutput = async () => {
-      try {
-        setError(null);
-        const data = await api.getNodeOutput(nodeId)
-        setOutputData(data)
-      } catch (error) {
-        console.error("Failed to fetch node output:", error)
-        setError("Failed to load node output. Please try again later.")
-        setOutputData({
-          output: "Error loading output",
-          flowSteps: []
-        })
-      }
-    }
+    //to do if (!nodeId) return;
 
-    if (nodeId) {
-      fetchOutput()
-    }
-  }, [nodeId])
+    // Start streaming the flow output
+    const cleanup = api.getFlowOutput("to do", (data) => {
+      try {
+        // Parse the incoming data if it's JSON
+        const parsedData = JSON.parse(data);
+        setOutputData(prevData => ({
+          output: parsedData.output || prevData.output,
+          flowSteps: parsedData.flowSteps || prevData.flowSteps
+        }));
+      } catch (e) {
+        // If it's not JSON, treat it as raw output
+        setOutputData(prevData => ({
+          ...prevData,
+          output: data
+        }));
+      }
+    });
+
+    // Cleanup the stream when component unmounts or nodeId changes
+    return () => {
+      cleanup();
+    };
+  }, [nodeId]);
 
   return (
     <Card className="bg-card-background border-border">
