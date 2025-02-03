@@ -1,9 +1,10 @@
-import { AuthOptions } from "next-auth";
 import NextAuth from "next-auth"
 import KeycloakProvider from "next-auth/providers/keycloak"
+import 'server-only' //Makes sure this does not accidentally get imported in the client
 
 
-export const authOptions: AuthOptions = {
+
+export const authOptions = {
     providers: [
         KeycloakProvider({
             clientId: process.env.KEYCLOAK_CLIENT_ID,
@@ -16,12 +17,14 @@ export const authOptions: AuthOptions = {
           // Persist the OAuth access_token to the token right after signin
           if (account) {
             token.accessToken = account.access_token
+            token.refreshToken = account.refresh_token
           }
           return token
         },
         async session({ session, token, user }) {
           // Send properties to the client, like an access_token from a provider.
-          (session as any).accessToken = token.accessToken
+          session.accessToken = token.accessToken
+          session.refreshToken = token.refreshToken
           return session
         }
       }

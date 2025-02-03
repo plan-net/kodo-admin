@@ -9,8 +9,8 @@ import logsData from '@/data/logs.json'
 import outputsData from '@/data/outputs.json';
 import flowsData from '@/data/flows.json';
 import Fuse from 'fuse.js';
-import { getSession } from 'next-auth/react';
-import {client, flowsFlows} from "../../ui/src/lib/gen-api";
+import { client, flowsFlows } from "../../ui/src/lib/gen-api";
+
 
 const reg_url = process.env.NEXT_PUBLIC_REGISTRY_URL || 'http://localhost:3367'
 
@@ -18,21 +18,31 @@ console.log('env.REGISTRY_URL :' + reg_url)
 console.log('reg_url :', reg_url)
 
 client.setConfig({
-    baseUrl:reg_url,
+  baseUrl: reg_url,
 })
 
 
 client.interceptors.request.use(async (request, options) => {
-  const session = await getSession();
-  request.headers.set('Authorization', 'Bearer '  + (session as any).accessToken); 
+  if (typeof window === 'undefined') {
+    return request;
+  }
+  const response = await fetch('/api/token?audience=kodosumi-service', {
+    method: 'GET',
+    headers: {
+      'Content-Type': 'application/x-www-form-urlencoded',
+    },
+  }
+  )
+  const token = (await response.json())
+  request.headers.set('Authorization', 'Bearer ' + token.access_token);
   return request;
 });
 
 export const api = {
   // Get list of all nodes with basic info
-  getNodes: () => 
+  getNodes: () =>
     Promise.delay(500).then(() => nodesData),
-  
+
   // Get detailed data for a specific node
   getNodeDetails: (nodeId: string) =>
     Promise.delay(700).then(() => {
@@ -42,28 +52,28 @@ export const api = {
       }
       return details;
     }),
-  
+
   getRequestsData: () =>
     Promise.delay(700).then(() => requestsData),
-  
+
   getStatsData: () =>
     Promise.delay(600).then(() => statsData),
-  
+
   getCurrentUser: () =>
     Promise.delay(300).then(() => userData.authenticated),
-    
+
   getNotifications: () =>
     Promise.delay(400).then(() => ({
       notifications: notificationsData.notifications,
       unreadCount: notificationsData.unreadCount
     })),
-    
+
   markNotificationAsRead: (notificationId: string) =>
     Promise.delay(300).then(() => ({ success: true })),
-    
+
   markAllNotificationsAsRead: () =>
     Promise.delay(300).then(() => ({ success: true })),
-    
+
   // Get logs for a specific node
   getNodeLogs: (nodeId: string) =>
     Promise.delay(600).then(() => {
@@ -73,7 +83,7 @@ export const api = {
       }
       return logs;
     }),
-  
+
   // Get output data for a specific node
   getNodeOutput: (nodeId: string) =>
     Promise.delay(600).then(() => {
@@ -88,9 +98,9 @@ export const api = {
   getFlows: () =>
     Promise.delay(0).then(async () => {
 
-        // todo: to get mocks comment these 2 lines
-        const resp = await flowsFlows()
-        const flowsData = resp.data;
+      // todo: to get mocks comment these 2 lines
+      const resp = await flowsFlows()
+      const flowsData = resp.data;
 
       const flowsWithLogsAndRequests = flowsData.items.map(flow => ({
         ...flow,
@@ -224,7 +234,7 @@ export const api = {
       const fuse = new Fuse(flowsData.items, options);
       const searchResults = fuse.search(query);
       const items = searchResults.map(result => result.item);
-      
+
       return {
         total: flowsData.items.length, // Total should be all possible items
         filtered: items.length,        // Filtered is the search results
