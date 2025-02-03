@@ -277,28 +277,31 @@ export const api = {
       return pinnedFlows.includes(flowUrl);
     }),
 
-  // Get streaming output for a specific flow
-  getFlowOutput: (flowId: string, onData: (data: string) => void) => {
-    //to do replace this with id after starting flow from gui
-    const url = `${reg_url2}/flow/679c05162c614df1145d5f63/stdout`;
+  // Get output for a specific flow using simple fetch
+  getFlowOutput: async (flowId: string) => {
+    const url = `${reg_url2}/flow/${flowId}/stdout`;
+    console.log('Fetching flow output:', url);
     
-    // Create EventSource for server-sent events
-    const eventSource = new EventSource(url);
+    try {
+      const response = await fetch(url);
+      return await response.text();
+    } catch (error) {
+      console.error('Error fetching flow output:', error);
+      return 'Error: Failed to fetch output data';
+    }
+  },
+
+  // Get steps for a specific flow using simple fetch
+  getFlowSteps: async (flowId: string) => {
+    const url = `${reg_url2}/flow/${flowId}/event`;
+    console.log('Fetching flow steps:', url);
     
-    // Handle incoming messages
-    eventSource.onmessage = (event) => {
-      onData(event.data);
-    };
-    
-    // Handle errors
-    eventSource.onerror = (error) => {
-      console.error('Error reading flow output:', error);
-      eventSource.close();
-    };
-    
-    // Return cleanup function to close connection
-    return () => {
-      eventSource.close();
-    };
+    try {
+      const response = await fetch(url);
+      return await response.text();
+    } catch (error) {
+      console.error('Error fetching flow steps:', error);
+      return 'Error: Failed to fetch steps data';
+    }
   },
 }; 

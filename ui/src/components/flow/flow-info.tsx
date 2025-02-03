@@ -16,6 +16,7 @@ import { NodeStats } from '@/components/node/node-stats'
 import { FlowWelcome } from './flow-welcome'
 import { FlowsRequests } from './flows-requests'
 import { api } from '@/lib/api'
+import { FlowOutput } from './flow-output'
 
 interface FlowData {
   id?: string
@@ -203,14 +204,10 @@ export function FlowInfo({
                 onSubmit={(data) => console.log('Submit:', data)}
                 onClear={() => console.log('Clear input')}
               />
-              <NodeOutput
-                nodeId={selectedFlow?.id || ''}
-                status={selectedFlow?.status || { running: false, step: 0, totalSteps: 0 }}
-                output={selectedFlow?.output || ''}
-                flowSteps={selectedFlow?.flowSteps || []}
-                onInterrupt={() => console.log('Interrupt')}
-                onClear={() => console.log('Clear output')}
-                onRetry={() => console.log('Retry')}
+              <FlowOutput
+                flowId= '67a137662c614df69430c63f'
+                //initialOutput=''
+                // initialSteps=''
               />
             </div>
             
