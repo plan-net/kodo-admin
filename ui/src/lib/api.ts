@@ -13,8 +13,6 @@ import {client, flowsFlows} from "../../ui/src/lib/gen-api";
 const reg_url = process.env.NEXT_PUBLIC_REGISTRY_URL || 'http://localhost:3371'
 const reg_url2 = 'http://localhost:3371'
 
-console.log('env.REGISTRY_URL :' + reg_url)
-console.log('reg_url :', reg_url)
 
 client.setConfig({
     baseUrl:reg_url,
@@ -83,8 +81,8 @@ export const api = {
   // Get list of all flows
   getFlows: () =>
     Promise.delay(0).then(async () => {
-        const resp = await flowsFlows();
-        const flows = resp.data;
+        const resp = await fetch(`${reg_url2}/flows`);
+        const flows = await resp.json();
 
         const flowsWithLogsAndRequests = flows.items.map(flow => ({
           ...flow,
@@ -199,7 +197,17 @@ export const api = {
         };
     }),
 
-    
+  getFlowInstances: () =>
+    Promise.delay(0).then(async () => {
+      const resp = await fetch(`${reg_url2}/flow`);
+      const data = await resp.json();
+      return {
+        result: data.result,
+        total: data.total,
+        p: data.p,
+        pp: data.pp
+      };
+    }),
 
   // Get all unique tags from flows
   getAllFlowTags: () =>

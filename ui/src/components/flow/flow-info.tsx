@@ -1,22 +1,21 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { Badge } from "@/components/ui/badge"
 import { FlowHeader } from './flow-header'
 import { FlowSearch } from './flow-search'
 import { FlowCard } from './flow-card'
 import { TopFlowBar } from './top-flow-bar'
 import { NodeLogs } from '@/components/node/node-logs'
-import { RequestsTable } from '@/components/node/requests-table'
 import { NodeRevenueChart } from '@/components/node/revenue-chart'
 import { NodeRevenueStats } from '@/components/node/revenue-stats'
 import { NodeInput } from '@/components/node/node-input'
 import { NodeOutput } from '@/components/node/node-output'
-import { NodeMainSettings } from '@/components/node/node-main-settings'
-import { NodePricing } from '@/components/node/node-pricing'
-import { NodeDangerZone } from '@/components/node/node-danger-zone'
 import { ExportButton } from "@/components/ui/export-button"
 import { NodeStats } from '@/components/node/node-stats'
+import { FlowWelcome } from './flow-welcome'
+import { FlowsRequests } from './flows-requests'
+import { api } from '@/lib/api'
 
 interface FlowData {
   id?: string
@@ -55,6 +54,28 @@ interface FlowData {
   }
 }
 
+interface FlowInstancesData {
+  result: Array<{
+    fid: string
+    status: string
+    start_time: string
+    end_time: string
+    total: number
+    flow: {
+      url: string
+      name: string
+      description: string
+      author: string
+      tags: string[]
+    }
+    inactive: boolean | null
+    alive: boolean | null
+  }>
+  total: number
+  p: number
+  pp: number
+}
+
 interface FlowInfoProps {
   data: {6
     registryName: string
@@ -87,6 +108,16 @@ export function FlowInfo({
   const [selectedAction, setSelectedAction] = useState('Welcome')
   const [filteredFlows, setFilteredFlows] = useState(data?.flows || [])
   const [selectedFlow, setSelectedFlow] = useState<FlowData | null>(null)
+  const [flowInstances, setFlowInstances] = useState<FlowInstancesData | null>(null)
+
+  useEffect(() => {
+   // if (selectedAction === 'Requests') {
+      api.getFlowInstances()
+        .then(data => setFlowInstances(data))
+        .catch(error => console.error('Error fetching flow instances:', error))
+    //}
+  }, [selectedAction])
+
 
   const handleSearchResults = (results: { items: any[] }) => {
     setFilteredFlows(results.items)
@@ -136,6 +167,9 @@ export function FlowInfo({
               name={selectedFlow?.name || data.registryName}
               description={selectedFlow?.description || data.registryDescription}
             />
+            {selectedFlow?.url && (
+              <FlowWelcome html={selectedFlow.url} />
+            )}
             <NodeStats data={{
               status: {
                 attached: {
@@ -192,11 +226,16 @@ export function FlowInfo({
                   </button>
                 </div>
               </div>
-              <RequestsTable 
-                data={{ 
-                  requests: (selectedFlow?.requests || []).slice(0, 3) 
-                }} 
-              />
+              {flowInstances ? (
+                <FlowsRequests data={{
+                  ...flowInstances,
+                  result: flowInstances.result.slice(0, 3) // Only show first 3 results
+                }} />
+              ) : (
+                <div className="flex items-center justify-center h-32">
+                  <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-gray-400" />
+                </div>
+              )}
             </div>
           </>
         )
@@ -248,7 +287,13 @@ export function FlowInfo({
                   </button>
                 </div>
               </div>
-              <RequestsTable data={{ requests: selectedFlow?.requests || [] }} />
+              {flowInstances ? (
+                <FlowsRequests data={flowInstances} />
+              ) : (
+                <div className="flex items-center justify-center h-32">
+                  <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-gray-400" />
+                </div>
+              )}
             </div>
           </>
         )
