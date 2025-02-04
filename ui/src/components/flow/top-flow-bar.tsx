@@ -9,7 +9,7 @@ interface TopFlowBarProps {
 }
 
 export function TopFlowBar({ selectedAction, setSelectedAction, hasSelectedFlow }: TopFlowBarProps) {
-  const actions = ['Welcome', 'Run', 'Requests', 'Logs', 'Usage']
+  const actions = ['Welcome', 'Run', 'Jobs']
 
   return (
     <div className="flex items-center justify-between border-b border-border pb-4">

@@ -7,15 +7,10 @@ import { FlowSearch } from './flow-search'
 import { FlowCard } from './flow-card'
 import { TopFlowBar } from './top-flow-bar'
 import { NodeLogs } from '@/components/node/node-logs'
-import { NodeRevenueChart } from '@/components/node/revenue-chart'
-import { NodeRevenueStats } from '@/components/node/revenue-stats'
-import { NodeInput } from '@/components/node/node-input'
-import { ExportButton } from "@/components/ui/export-button"
 import { NodeStats } from '@/components/node/node-stats'
 import { FlowWelcome } from './flow-welcome'
 import { FlowsRequests } from './flows-requests'
 import { api } from '@/lib/api'
-import { FlowOutput } from './flow-output'
 
 interface FlowData {
   id?: string
@@ -165,12 +160,12 @@ export function FlowInfo({
           </>
         )
 
-      case 'Requests':
+      case 'Jobs':
         return (
           <>
             <div className="mt-8">
               <div className="flex items-center justify-between mb-4">
-                <h2 className="text-xl font-semibold">Flow's Requests Table</h2>
+                <h2 className="text-xl font-semibold">Flow's Jobs Table</h2>
                 <div className="flex items-center gap-4">
                   <div className="flex items-center gap-2 bg-secondary px-4 py-2 rounded-lg">
                     <span className="text-muted">Jan 20, 2023 - Feb 09, 2023</span>
