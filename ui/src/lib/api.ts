@@ -8,7 +8,7 @@ import notificationsData from '@/data/notifications.json';
 import logsData from '@/data/logs.json'
 import outputsData from '@/data/outputs.json';
 import Fuse from 'fuse.js';
-import {client, flowsFlows} from "../../ui/src/lib/gen-api";
+import {client, flowsFlows} from "./gen-api";
 
 const reg_url = process.env.NEXT_PUBLIC_REGISTRY_URL || 'http://localhost:3371'
 const reg_url2 = 'http://localhost:3371'
@@ -316,6 +316,22 @@ export const api = {
     } catch (error) {
       console.error('Error fetching flow errors:', error);
       return 'Error: Failed to fetch error data';
+    }
+  },
+
+  removeFlow: async (flowId: string) => {
+    const url = `${reg_url2}/flow/${flowId}/remove`;
+    try {
+      const response = await fetch(url, {
+        method: 'DELETE',
+      });
+      if (!response.ok) {
+        throw new Error('Failed to remove flow');
+      }
+      return await response.json();
+    } catch (error) {
+      console.error('Error removing flow:', error);
+      throw error;
     }
   },
 }; 

@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react'
 import { useSearchParams } from 'next/navigation'
-import { client, home} from '../../../ui/src/lib/gen-api'
+import { client, home} from '../../lib/gen-api'
 
 client.setConfig({
     baseUrl: 'http://localhost:3366',

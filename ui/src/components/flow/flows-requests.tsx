@@ -10,6 +10,12 @@ import { Badge } from "@/components/ui/badge"
 import { MoreVertical } from "lucide-react"
 import { useState } from "react"
 import { api } from '@/lib/api'
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu"
 
 interface FlowsRequestsProps {
   data: {
@@ -37,19 +43,10 @@ interface FlowsRequestsProps {
     p: number
     pp: number
   }
+  onFlowRemoved?: () => void
 }
 
-function ResultPopup({ content, onClose }: { content: string; onClose: () => void }) {
-  return (
-    <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50" onClick={onClose}>
-      <div className="bg-background p-6 rounded-lg max-w-2xl max-h-[80vh] overflow-auto" onClick={e => e.stopPropagation()}>
-        <pre className="whitespace-pre-wrap">{content}</pre>
-      </div>
-    </div>
-  )
-}
-
-export function FlowsRequests({ data }: FlowsRequestsProps) {
+export function FlowsRequests({ data, onFlowRemoved }: FlowsRequestsProps) {
   const [popup, setPopup] = useState<{type: string; content: string} | null>(null)
 
   const handleResultClick = async (type: string, fid: string) => {
@@ -73,6 +70,18 @@ export function FlowsRequests({ data }: FlowsRequestsProps) {
     } catch (error) {
       console.error(`Error fetching ${type}:`, error)
       setPopup({ type, content: `Error fetching ${type} data` })
+    }
+  }
+
+  const handleRemoveFlow = async (fid: string) => {
+    try {
+      await api.removeFlow(fid)
+      if (onFlowRemoved) {
+        onFlowRemoved()
+      }
+    } catch (error) {
+      console.error('Error removing flow:', error)
+      // You might want to show an error message to the user
     }
   }
 
@@ -160,9 +169,21 @@ export function FlowsRequests({ data }: FlowsRequestsProps) {
                 </div>
               </TableCell>
               <TableCell>
-                <button className="p-2 hover:bg-gray-800 rounded-lg">
-                  <MoreVertical className="w-4 h-4" />
-                </button>
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <button className="p-2 hover:bg-gray-800 rounded-lg">
+                      <MoreVertical className="w-4 h-4" />
+                    </button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent align="end">
+                    <DropdownMenuItem
+                      className="text-red-500 focus:text-red-500"
+                      onClick={() => handleRemoveFlow(item.fid)}
+                    >
+                      Remove
+                    </DropdownMenuItem>
+                  </DropdownMenuContent>
+                </DropdownMenu>
               </TableCell>
             </TableRow>
           ))}
