@@ -168,38 +168,6 @@ export function FlowInfo({
       case 'Requests':
         return (
           <>
-            <FlowHeader 
-              name={selectedFlow?.name || data.registryName}
-              description={selectedFlow?.description || data.registryDescription}
-            />
-            <NodeStats data={{
-              status: {
-                attached: {
-                  status: true,
-                  timestamp: selectedFlow?.created || ''
-                },
-                responds: {
-                  status: true,
-                  value: '200ms'
-                },
-                taskStatus: {
-                  status: 'Running',
-                  message: 'Active'
-                },
-                callsAmount: {
-                  value: selectedFlow?.requests?.length.toString() || '0',
-                  trend: 'up'
-                },
-                maxWorkers: {
-                  value: 5,
-                  description: 'Active workers'
-                },
-                queueLength: {
-                  value: 0,
-                  description: 'Pending requests'
-                }
-              }
-            }} />
             <div className="mt-8">
               <div className="flex items-center justify-between mb-4">
                 <h2 className="text-xl font-semibold">Flow's Requests Table</h2>
@@ -291,38 +259,6 @@ export function FlowInfo({
                 <NodeLogs nodeId={selectedFlow?.id || ''} />
               )}
             </div>
-          </>
-        )
-
-      case 'Usage':
-        const mockRevenueData = {
-          monthly: [
-            { month: 'Jan', value: 1200, growth: 10 },
-            { month: 'Feb', value: 1400, growth: 15 },
-          ],
-          current: {
-            percentage: 75,
-            amount: 1500,
-            growth: 12
-          }
-        }
-
-        return (
-          <>
-            <FlowHeader 
-              name={selectedFlow?.name || data.registryName}
-              description={selectedFlow?.description || data.registryDescription}
-            />
-            <div className="rounded-lg border border-border bg-background p-6 w-full" style={{marginBottom: 20}}>
-              <div className="flex items-center justify-between mb-8">
-                <h2 className="text-xl font-semibold">Usage Over Time</h2>
-                <ExportButton onExport={() => {}} />
-              </div>
-              <div className="h-[300px] w-full">
-                <NodeRevenueChart data={mockRevenueData} />
-              </div>
-            </div>
-            <NodeRevenueStats data={mockRevenueData} />
           </>
         )
 

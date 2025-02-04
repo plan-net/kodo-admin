@@ -304,4 +304,18 @@ export const api = {
       return 'Error: Failed to fetch steps data';
     }
   },
+
+  // Get errors for a specific flow using stderr endpoint
+  getFlowErrors: async (flowId: string) => {
+    const url = `${reg_url2}/flow/${flowId}/stderr`;
+    console.log('Fetching flow errors:', url);
+    
+    try {
+      const response = await fetch(url);
+      return await response.text();
+    } catch (error) {
+      console.error('Error fetching flow errors:', error);
+      return 'Error: Failed to fetch error data';
+    }
+  },
 }; 
