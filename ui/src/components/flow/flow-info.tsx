@@ -10,7 +10,6 @@ import { NodeLogs } from '@/components/node/node-logs'
 import { NodeRevenueChart } from '@/components/node/revenue-chart'
 import { NodeRevenueStats } from '@/components/node/revenue-stats'
 import { NodeInput } from '@/components/node/node-input'
-import { NodeOutput } from '@/components/node/node-output'
 import { ExportButton } from "@/components/ui/export-button"
 import { NodeStats } from '@/components/node/node-stats'
 import { FlowWelcome } from './flow-welcome'
@@ -134,10 +133,6 @@ export function FlowInfo({
       case 'Welcome':
         return (
           <div className="space-y-8">
-            <FlowHeader 
-              name={data.registryName}
-              description={data.registryDescription}
-            />
             
             <FlowSearch 
               onSearchChange={handleSearchResults}
@@ -164,76 +159,9 @@ export function FlowInfo({
       case 'Run':
         return (
           <>
-            <FlowHeader 
-              name={selectedFlow?.name || data.registryName}
-              description={selectedFlow?.description || data.registryDescription}
-            />
             {selectedFlow?.url && (
               <FlowWelcome html={selectedFlow.url} />
             )}
-            <NodeStats data={{
-              status: {
-                attached: {
-                  status: true,
-                  timestamp: selectedFlow?.created || ''
-                },
-                responds: {
-                  status: true,
-                  value: '200ms'
-                },
-                taskStatus: {
-                  status: 'Running',
-                  message: 'Active'
-                },
-                callsAmount: {
-                  value: selectedFlow?.requests?.length.toString() || '0',
-                  trend: 'up'
-                },
-                maxWorkers: {
-                  value: 5,
-                  description: 'Active workers'
-                },
-                queueLength: {
-                  value: 0,
-                  description: 'Pending requests'
-                }
-              }
-            }} />
-            <div className="grid grid-cols-2 gap-6">
-              <NodeInput 
-                onSubmit={(data) => console.log('Submit:', data)}
-                onClear={() => console.log('Clear input')}
-              />
-              <FlowOutput
-                flowId= '67a137662c614df69430c63f'
-                //initialOutput=''
-                // initialSteps=''
-              />
-            </div>
-            
-            <div className="mt-8">
-              <div className="flex items-center justify-between mb-4">
-                <h2 className="text-xl font-semibold">Recent Requests</h2>
-                <div className="flex items-center gap-4">
-                  <button 
-                    className="flex items-center gap-2 bg-secondary px-4 py-2 rounded-lg hover:bg-secondary/80"
-                    onClick={() => setSelectedAction('Requests')}
-                  >
-                    <span>View All</span>
-                  </button>
-                </div>
-              </div>
-              {flowInstances ? (
-                <FlowsRequests data={{
-                  ...flowInstances,
-                  result: flowInstances.result.slice(0, 3) // Only show first 3 results
-                }} />
-              ) : (
-                <div className="flex items-center justify-center h-32">
-                  <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-gray-400" />
-                </div>
-              )}
-            </div>
           </>
         )
 
