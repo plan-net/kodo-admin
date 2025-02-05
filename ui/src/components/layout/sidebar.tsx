@@ -2,7 +2,7 @@
 
 import Link from 'next/link'
 import { usePathname, useSearchParams, useRouter } from 'next/navigation'
-import { useEffect, useState } from 'react'
+import { useEffect, useState, Suspense } from 'react'
 import { LayoutDashboard, Activity, ChevronLeft, ChevronRight } from 'lucide-react'
 import { api } from '@/lib/api'
 
@@ -14,7 +14,7 @@ interface Flow {
   tags: string[]
 }
 
-export function Sidebar() {
+function SidebarContent() {
   const pathname = usePathname()
   const searchParams = useSearchParams()
   const router = useRouter()
@@ -160,6 +160,14 @@ export function Sidebar() {
         </nav>
       </div>
     </div>
+  )
+}
+
+export function Sidebar() {
+  return (
+    <Suspense fallback={<div>Loading sidebar...</div>}>
+      <SidebarContent />
+    </Suspense>
   )
 }
 
