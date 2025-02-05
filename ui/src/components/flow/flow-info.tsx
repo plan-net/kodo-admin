@@ -73,7 +73,7 @@ interface FlowInstancesData {
 }
 
 interface FlowInfoProps {
-  data: {6
+  data: {
     registryName: string
     registryDescription: string
     flows: Array<{
@@ -93,15 +93,18 @@ interface FlowInfoProps {
   onPin: (flow: any) => void
   selectedTags: string[]
   onTagClick: (tag: string) => void
+  selectedAction: string
+  onActionSelect: (action: string) => void
 }
 
 export function FlowInfo({ 
   data, 
   onPin, 
   selectedTags, 
-  onTagClick 
+  onTagClick,
+  selectedAction,
+  onActionSelect
 }: FlowInfoProps) {
-  const [selectedAction, setSelectedAction] = useState('Welcome')
   const [filteredFlows, setFilteredFlows] = useState(data?.flows || [])
   const [selectedFlow, setSelectedFlow] = useState<FlowData | null>(null)
   const [flowInstances, setFlowInstances] = useState<FlowInstancesData | null>(null)
@@ -121,12 +124,12 @@ export function FlowInfo({
 
   const handleShowFlow = (flow: FlowData) => {
     setSelectedFlow(flow)
-    setSelectedAction('Run')
+    onActionSelect('Welcome')
   }
 
   const renderContent = () => {
     switch (selectedAction) {
-      case 'Welcome':
+      case 'Dashboard':
         return (
           <div className="space-y-8">
             
@@ -152,7 +155,7 @@ export function FlowInfo({
           </div>
         )
 
-      case 'Run':
+      case 'Welcome':
         return (
           <>
             {selectedFlow?.url && (
@@ -305,7 +308,7 @@ export function FlowInfo({
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <TopFlowBar
           selectedAction={selectedAction}
-          setSelectedAction={setSelectedAction}
+          setSelectedAction={onActionSelect}
           hasSelectedFlow={!!selectedFlow}
         />
         <div className="py-8">

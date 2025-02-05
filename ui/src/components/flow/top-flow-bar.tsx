@@ -9,13 +9,13 @@ interface TopFlowBarProps {
 }
 
 export function TopFlowBar({ selectedAction, setSelectedAction, hasSelectedFlow }: TopFlowBarProps) {
-  const actions = ['Welcome', 'Run', 'Jobs']
+  const actions = ['Welcome', 'Jobs']
 
   return (
     <div className="flex items-center justify-between border-b border-border pb-4">
       <div className="flex gap-1">
         {actions.map((action) => {
-          if (!hasSelectedFlow && action !== 'Welcome') return null;
+          if (!hasSelectedFlow) return null;  // Hide both Welcome and Jobs when no flow selected
           return (
             <Button
               key={action}

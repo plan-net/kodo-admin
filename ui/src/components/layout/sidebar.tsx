@@ -14,7 +14,13 @@ interface Flow {
   tags: string[]
 }
 
-function SidebarContent() {
+// Add props interface
+interface SidebarProps {
+  selectedAction: string;
+  onActionSelect: (action: string) => void;
+}
+
+function SidebarContent({ selectedAction, onActionSelect }: SidebarProps) {
   const pathname = usePathname()
   const searchParams = useSearchParams()
   const router = useRouter()
@@ -136,9 +142,9 @@ function SidebarContent() {
       <div className="p-4 mb-auto">
         <nav className="space-y-1 bg-card-background p-2 rounded-lg border border-border/50">
           <button
-            onClick={() => router.push('/')}
+            onClick={() => onActionSelect('Dashboard')}
             className={`w-full text-left px-3 py-2 rounded-lg text-sm flex items-center gap-2 transition-colors ${
-              !selectedFlowId 
+              selectedAction === 'Dashboard'
                 ? 'bg-card-hover text-foreground' 
                 : 'hover:bg-card-hover/50 text-muted-foreground'
             }`}
@@ -146,27 +152,17 @@ function SidebarContent() {
             <LayoutDashboard className="w-4 h-4" />
             {!isCollapsed && <span>Dashboard</span>}
           </button>
-          <Link
-            href="/registry-health"
-            className={`flex items-center gap-2 px-3 py-2 rounded-lg text-sm transition-colors ${
-              pathname === '/registry-health'
-                ? 'bg-card-hover text-foreground'
-                : 'hover:bg-card-hover/50 text-muted-foreground'
-            }`}
-          >
-            <Activity className="w-4 h-4" />
-            {!isCollapsed && <span>Registry Health</span>}
-          </Link>
         </nav>
       </div>
     </div>
   )
 }
 
-export function Sidebar() {
+// Update Sidebar component to pass through props
+export function Sidebar({ selectedAction, onActionSelect }: SidebarProps) {
   return (
     <Suspense fallback={<div>Loading sidebar...</div>}>
-      <SidebarContent />
+      <SidebarContent selectedAction={selectedAction} onActionSelect={onActionSelect} />
     </Suspense>
   )
 }

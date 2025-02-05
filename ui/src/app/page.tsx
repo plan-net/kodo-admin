@@ -9,6 +9,7 @@ import { refreshSidebarPinnedFlows } from '@/components/layout/sidebar'
 export default function DashboardPage() {
   const [pinnedFlows, setPinnedFlows] = useState<any[]>([])
   const [selectedTags, setSelectedTags] = useState<string[]>([])
+  const [selectedAction, setSelectedAction] = useState('Dashboard')
 
   useEffect(() => {
     const fetchPinnedFlows = async () => {
@@ -39,10 +40,12 @@ export default function DashboardPage() {
     setSelectedTags(newTags)
   }
 
-  // @ts-ignore
   return (
     <div className="flex">
-      <Sidebar />
+      <Sidebar 
+        selectedAction={selectedAction}
+        onActionSelect={setSelectedAction}
+      />
 
       <main className="flex-1 ml-[250px] min-h-screen text-gray-100">
         <div className="max-w-[1920px] mx-auto px-4 sm:px-6 lg:px-8">
@@ -51,7 +54,6 @@ export default function DashboardPage() {
               data={{
                 registryName: "Registry name",
                 registryDescription: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
-                // @ts-ignore
                 flows: pinnedFlows.map(flow => ({
                   id: flow.url.split('/').pop() || '',
                   name: flow.name,
@@ -65,6 +67,8 @@ export default function DashboardPage() {
                   isPinned: true
                 })) || []
               }}
+              selectedAction={selectedAction}
+              onActionSelect={setSelectedAction}
               onPin={handlePin}
               selectedTags={selectedTags}
               onTagClick={(tag) => handleTagsChange(

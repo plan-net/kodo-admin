@@ -16,14 +16,16 @@ interface FlowCardProps {
     organization: string
     created: string
     modified: string
+    isPinned: boolean
   }
+  onPin: (flow: any) => void
   onShow: (data: { url: string; name: string; description: string; tags: string[]; price: number; author: string; organization: string; created: string; modified: string }) => void
   selectedTags?: string[]
   onTagClick?: (tag: string) => void
 }
 
-export function FlowCard({ data, onShow, selectedTags = [], onTagClick = () => {} }: FlowCardProps) {
-  const [isPinned, setIsPinned] = useState(false)
+export function FlowCard({ data, onPin, onShow, selectedTags = [], onTagClick = () => {} }: FlowCardProps) {
+  const [isPinned, setIsPinned] = useState(data.isPinned)
 
   useEffect(() => {
     api.isFlowPinned(data.url).then(setIsPinned)
@@ -38,6 +40,9 @@ export function FlowCard({ data, onShow, selectedTags = [], onTagClick = () => {
         await api.pinFlow(data.url)
         setIsPinned(true)
       }
+      
+      // Call the onPin prop handler
+      onPin(data)
       
       // Trigger sidebar refresh
       refreshSidebarPinnedFlows()
