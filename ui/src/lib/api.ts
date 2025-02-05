@@ -319,6 +319,22 @@ export const api = {
     }
   },
 
+  getFlowDetails: async (flowId: string) => {
+    const url = `${reg_url2}/flow/${flowId}`;
+    console.log('Fetching flow details:', url);
+    
+    try {
+      const response = await fetch(url);
+      if (!response.ok) {
+        throw new Error(`Failed to fetch flow details for ID: ${flowId}`);
+      }
+      return await response.json();
+    } catch (error) {
+      console.error('Error fetching flow details:', error);
+      throw error;
+    }
+  },
+
   removeFlow: async (flowId: string) => {
     const url = `${reg_url2}/flow/${flowId}/remove`;
     try {
@@ -328,7 +344,8 @@ export const api = {
       if (!response.ok) {
         throw new Error('Failed to remove flow');
       }
-      return await response.json();
+      // Just return success since there's no response body
+      return { success: true };
     } catch (error) {
       console.error('Error removing flow:', error);
       throw error;

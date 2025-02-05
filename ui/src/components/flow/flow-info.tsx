@@ -8,7 +8,7 @@ import { FlowCard } from './flow-card'
 import { TopFlowBar } from './top-flow-bar'
 import { NodeLogs } from '@/components/node/node-logs'
 import { NodeStats } from '@/components/node/node-stats'
-import { FlowWelcome } from './flow-welcome'
+import { FlowWelcomeIFrame } from './flow-welcome-iframe'
 import { FlowsRequests } from './flows-requests'
 import { api } from '@/lib/api'
 
@@ -47,6 +47,7 @@ interface FlowData {
     step: number
     totalSteps: number
   }
+  isPinned: boolean
 }
 
 interface FlowInstancesData {
@@ -155,7 +156,17 @@ export function FlowInfo({
         return (
           <>
             {selectedFlow?.url && (
-              <FlowWelcome html={selectedFlow.url} />
+              <>
+                <FlowHeader 
+                  name={selectedFlow.name}
+                  description={selectedFlow.description}
+                  tags={selectedFlow.tags}
+                  url={selectedFlow.url}
+                  isPinned={selectedFlow.isPinned}
+                  onTagClick={onTagClick}
+                />
+                <FlowWelcomeIFrame url={selectedFlow.url} />
+              </>
             )}
           </>
         )
@@ -199,6 +210,10 @@ export function FlowInfo({
             <FlowHeader 
               name={selectedFlow?.name || data.registryName}
               description={selectedFlow?.description || data.registryDescription}
+              tags={selectedFlow?.tags || []}
+              url={selectedFlow?.url || ''}
+              isPinned={selectedFlow?.isPinned}
+              onTagClick={onTagClick}
             />
             <NodeStats data={{
               status: {
