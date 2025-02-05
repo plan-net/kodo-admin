@@ -150,7 +150,7 @@ export function FlowInfo({
 
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 gap-6 auto-rows-fr">
               {filteredFlows.map((flow) => (
-                <div className="h-[280px] max-w-[400px] w-full">
+                <div className="h-[280px] max-w-[400px] w-full" key={flow.url}>
                   <FlowCard 
                     key={flow.url}
                     data={{
