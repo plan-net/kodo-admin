@@ -7,6 +7,7 @@ import { api } from '@/lib/api'
 import { refreshSidebarPinnedFlows } from '@/components/layout/sidebar'
 
 export default function DashboardPage() {
+  const [isCollapsed, setIsCollapsed] = useState(false)
   const [pinnedFlows, setPinnedFlows] = useState<any[]>([])
   const [allFlows, setAllFlows] = useState<any[]>([])
   const [selectedTags, setSelectedTags] = useState<string[]>([])
@@ -60,16 +61,20 @@ export default function DashboardPage() {
   }
 
   return (
-    <div className="flex">
+    <div className="flex h-screen w-screen overflow-hidden">
       <Sidebar 
         selectedAction={selectedAction}
         onActionSelect={setSelectedAction}
         pinnedFlows={pinnedFlows}
         onFlowSelect={handleShowFlow}
+        isCollapsed={isCollapsed}
+        onCollapse={setIsCollapsed}
       />
 
-      <main className="flex-1 ml-[250px] min-h-screen text-gray-100">
-        <div className="max-w-[1920px] mx-auto px-4 sm:px-6 lg:px-8">
+      <main className={`flex-1 transition-all duration-300 ${
+        isCollapsed ? 'ml-16' : 'ml-64'
+      }`}>
+        <div className="h-full overflow-auto">
           <div className="p-8 space-y-8">
             <FlowInfo 
               data={{
@@ -91,15 +96,6 @@ export default function DashboardPage() {
               )}
               selectedFlow={selectedFlow}
               onShowFlow={handleShowFlow}
-              ref={(flowInfo) => {
-                if (flowInfo) {
-                  const sidebar = document.querySelector('[data-sidebar]')
-                  if (sidebar) {
-                    // @ts-ignore - use the custom setShowFlow method
-                    sidebar.setShowFlow((flow) => flowInfo.handleShowFlow(flow))
-                  }
-                }
-              }}
             />
           </div>
         </div>

@@ -20,24 +20,27 @@ interface Flow {
   isPinned: boolean
 }
 
-// Add props interface
+// Update SidebarProps interface
 interface SidebarProps {
   selectedAction: string;
   onActionSelect: (action: string) => void;
   onFlowSelect?: (flow: Flow) => void;
   pinnedFlows: Flow[];
+  isCollapsed: boolean;
+  onCollapse: (collapsed: boolean) => void;
 }
 
 function SidebarContent({ 
   selectedAction, 
   onActionSelect, 
   onFlowSelect,
-  pinnedFlows  // Add this prop
+  pinnedFlows,
+  isCollapsed,
+  onCollapse
 }: SidebarProps) {
   const pathname = usePathname()
   const searchParams = useSearchParams()
   const router = useRouter()
-  const [isCollapsed, setIsCollapsed] = useState(false)
   
   const selectedFlowId = searchParams.get('flowId')
   const showFlowRef = useRef<((flow: Flow) => void) | null>(null)
@@ -59,7 +62,9 @@ function SidebarContent({
           }
         }
       }}
-      className={`${isCollapsed ? 'w-16' : 'w-64'} h-screen text-gray-100 fixed left-0 top-0 flex flex-col border-r border-border/50 transition-all duration-300`}
+      className={`${
+        isCollapsed ? 'w-16' : 'w-64'
+      } h-screen text-gray-100 fixed left-0 top-0 flex flex-col border-r border-border/50 transition-all duration-300 bg-background`}
     >
       <div className="p-4 flex-1">
         {/* Logo section with toggle button */}
@@ -71,8 +76,8 @@ function SidebarContent({
             </>
           )}
           <button 
-            onClick={() => setIsCollapsed(!isCollapsed)}
-            className="absolute -right-4 top-1/2 -translate-y-1/2 w-8 h-8 bg-card hover:bg-card-hover rounded-full flex items-center justify-center transition-colors"
+            onClick={() => onCollapse(!isCollapsed)}
+            className="absolute -right-4 top-24 w-8 h-8 bg-card hover:bg-card-hover rounded-full flex items-center justify-center transition-colors"
           >
             {isCollapsed ? <ChevronRight size={16} /> : <ChevronLeft size={16} />}
           </button>
@@ -135,8 +140,15 @@ function SidebarContent({
   )
 }
 
-// Update Sidebar component to pass through props
-export function Sidebar({ selectedAction, onActionSelect, onFlowSelect, pinnedFlows }: SidebarProps) {
+// Update Sidebar component to pass through new props
+export function Sidebar({ 
+  selectedAction, 
+  onActionSelect, 
+  onFlowSelect, 
+  pinnedFlows,
+  isCollapsed,
+  onCollapse 
+}: SidebarProps) {
   return (
     <Suspense fallback={<div>Loading sidebar...</div>}>
       <SidebarContent 
@@ -144,6 +156,8 @@ export function Sidebar({ selectedAction, onActionSelect, onFlowSelect, pinnedFl
         onActionSelect={onActionSelect}
         onFlowSelect={onFlowSelect}
         pinnedFlows={pinnedFlows}
+        isCollapsed={isCollapsed}
+        onCollapse={onCollapse}
       />
     </Suspense>
   )

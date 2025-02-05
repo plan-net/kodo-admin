@@ -310,8 +310,8 @@ export function FlowInfo({
   }
 
   return (
-    <div className="min-h-screen bg-background text-foreground">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div className="h-full bg-background text-foreground">
+      <div className="h-full max-w-[100%] mx-auto px-4 sm:px-6 lg:px-8">
         <TopFlowBar
           selectedAction={selectedAction}
           setSelectedAction={onActionSelect}
