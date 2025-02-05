@@ -47,6 +47,7 @@ interface FlowData {
     step: number
     totalSteps: number
   }
+  isPinned: boolean
 }
 
 interface FlowInstancesData {
@@ -159,6 +160,10 @@ export function FlowInfo({
                 <FlowHeader 
                   name={selectedFlow.name}
                   description={selectedFlow.description}
+                  tags={selectedFlow.tags}
+                  url={selectedFlow.url}
+                  isPinned={selectedFlow.isPinned}
+                  onTagClick={onTagClick}
                 />
                 <FlowWelcomeIFrame url={selectedFlow.url} />
               </>
@@ -205,6 +210,10 @@ export function FlowInfo({
             <FlowHeader 
               name={selectedFlow?.name || data.registryName}
               description={selectedFlow?.description || data.registryDescription}
+              tags={selectedFlow?.tags || []}
+              url={selectedFlow?.url || ''}
+              isPinned={selectedFlow?.isPinned}
+              onTagClick={onTagClick}
             />
             <NodeStats data={{
               status: {
