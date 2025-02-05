@@ -344,7 +344,8 @@ export const api = {
       if (!response.ok) {
         throw new Error('Failed to remove flow');
       }
-      return await response.json();
+      // Just return success since there's no response body
+      return { success: true };
     } catch (error) {
       console.error('Error removing flow:', error);
       throw error;
