@@ -155,7 +155,13 @@ export function FlowInfo({
         return (
           <>
             {selectedFlow?.url && (
-              <FlowWelcomeIFrame url={selectedFlow.url} />
+              <>
+                <FlowHeader 
+                  name={selectedFlow.name}
+                  description={selectedFlow.description}
+                />
+                <FlowWelcomeIFrame url={selectedFlow.url} />
+              </>
             )}
           </>
         )

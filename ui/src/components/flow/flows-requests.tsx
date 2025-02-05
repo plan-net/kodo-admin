@@ -46,13 +46,45 @@ interface FlowsRequestsProps {
   onFlowRemoved?: () => void
 }
 
+interface FlowDetailsData {
+  status: string;
+  total: number;
+  bootup: number;
+  runtime: number;
+  teardown: number;
+  version: string;
+  entry_point: string;
+  flow: {
+    url: string;
+    name: string;
+    description: string;
+    author: string;
+    tags: string[];
+    entry: string;
+  };
+  fid: string;
+  executor: string;
+  ray: string | null;
+  stdout: number;
+  stderr: number;
+  inactive: boolean | null;
+  pid: number;
+  ppid: number;
+}
+
 export function FlowsRequests({ data, onFlowRemoved }: FlowsRequestsProps) {
   const [popup, setPopup] = useState<{type: string; content: string} | null>(null)
+  const [statusPopup, setStatusPopup] = useState<FlowDetailsData | null>(null)
+  const [flowResults, setFlowResults] = useState(data.result)
 
   const handleResultClick = async (type: string, fid: string) => {
     try {
       let content = ''
       switch (type) {
+        case 'Status':
+          const details = await api.getFlowDetails(fid)
+          setStatusPopup(details)
+          return
         case 'Event Stream':
           content = await api.getFlowSteps(fid)
           break
@@ -79,13 +111,13 @@ export function FlowsRequests({ data, onFlowRemoved }: FlowsRequestsProps) {
       if (onFlowRemoved) {
         onFlowRemoved()
       }
+      setFlowResults(prev => prev.filter(flow => flow.fid !== fid))
     } catch (error) {
       console.error('Error removing flow:', error)
-      // You might want to show an error message to the user
     }
   }
 
-  if (!data?.result) return null
+  if (!flowResults) return null
 
   return (
     <div className="rounded-lg border border-gray-800 bg-[#101012]">
@@ -105,7 +137,7 @@ export function FlowsRequests({ data, onFlowRemoved }: FlowsRequestsProps) {
           </TableRow>
         </TableHeader>
         <TableBody>
-          {data.result.map((item) => (
+          {flowResults.map((item) => (
             <TableRow key={item.fid} className="border-gray-800">
               <TableCell>
                 <input type="checkbox" className="rounded border-gray-700" />
@@ -162,9 +194,9 @@ export function FlowsRequests({ data, onFlowRemoved }: FlowsRequestsProps) {
                   </button>
                   <button
                     className="px-3 py-1 bg-secondary rounded-md text-sm hover:bg-secondary/80"
-                    onClick={() => handleResultClick('State', item.fid)}
+                    onClick={() => handleResultClick('Status', item.fid)}
                   >
-                    state
+                    status
                   </button>
                 </div>
               </TableCell>
@@ -196,6 +228,14 @@ export function FlowsRequests({ data, onFlowRemoved }: FlowsRequestsProps) {
           onClose={() => setPopup(null)}
         />
       )}
+
+      {statusPopup && (
+        <StatusPopup
+          data={statusPopup}
+          onClose={() => setStatusPopup(null)}
+          onResultClick={handleResultClick}
+        />
+      )}
     </div>
   )
 }
@@ -208,7 +248,7 @@ interface ResultPopupProps {
 function ResultPopup({ content, onClose }: ResultPopupProps) {
   return (
     <div 
-      className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50"
+      className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-[60]"
       onClick={onClose}
     >
       <div 
@@ -230,4 +270,141 @@ function ResultPopup({ content, onClose }: ResultPopupProps) {
       </div>
     </div>
   )
+}
+
+function StatusPopup({ 
+  data, 
+  onClose,
+  onResultClick 
+}: { 
+  data: FlowDetailsData; 
+  onClose: () => void;
+  onResultClick: (type: string, fid: string) => void;
+}) {
+  return (
+    <div 
+      className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-[50]"
+      onClick={onClose}
+    >
+      <div 
+        className="bg-[#101012] rounded-lg p-6 w-full max-w-2xl border border-gray-800"
+        onClick={e => e.stopPropagation()}
+      >
+        <div className="flex justify-between items-center mb-6">
+          <h3 className="text-xl font-medium">Flow Details</h3>
+          <button 
+            onClick={onClose}
+            className="p-1 hover:bg-gray-800 rounded"
+          >
+            ✕
+          </button>
+        </div>
+
+        <div className="space-y-4">
+          <div className="grid grid-cols-2 gap-4">
+            <div>
+              <h4 className="text-sm text-gray-400 mb-1">Flow ID</h4>
+              <p className="font-mono">{data.fid}</p>
+            </div>
+            <div>
+              <h4 className="text-sm text-gray-400 mb-1">Status</h4>
+              <Badge 
+                variant={
+                  data.status === 'running' ? 'default' :
+                  data.status === 'error' ? 'destructive' :
+                  data.status === 'pending' ? 'secondary' :
+                  'success'
+                }
+              >
+                {data.status}
+              </Badge>
+            </div>
+          </div>
+
+          <div className="grid grid-cols-2 gap-4">
+            <div>
+              <h4 className="text-sm text-gray-400 mb-1">Flow Name</h4>
+              <p>{data.flow.name}</p>
+            </div>
+            <div>
+              <h4 className="text-sm text-gray-400 mb-1">Flow Author</h4>
+              <p>{data.flow.author}</p>
+            </div>
+          </div>
+
+          <div>
+            <h4 className="text-sm text-gray-400 mb-1">Organization</h4>
+            <p>{data.flow.url.split('/')[3]}</p>
+          </div>
+
+          <div>
+            <h4 className="text-sm text-gray-400 mb-1">Flow Homepage</h4>
+            <a 
+              href={data.flow.url} 
+              target="_blank" 
+              rel="noopener noreferrer"
+              className="text-blue-500 hover:underline"
+            >
+              {data.flow.url}
+            </a>
+          </div>
+
+          <div className="grid grid-cols-3 gap-4">
+            <div>
+              <h4 className="text-sm text-gray-400 mb-1">Total Time</h4>
+              <p>{data.total.toFixed(2)}s</p>
+            </div>
+            <div>
+              <h4 className="text-sm text-gray-400 mb-1">Bootup</h4>
+              <p>{data.bootup.toFixed(2)}s</p>
+            </div>
+            <div>
+              <h4 className="text-sm text-gray-400 mb-1">Runtime</h4>
+              <p>{data.runtime.toFixed(2)}s</p>
+            </div>
+          </div>
+
+          <div>
+            <h4 className="text-sm text-gray-400 mb-1">Entry Point</h4>
+            <p className="font-mono text-sm">{data.entry_point}</p>
+          </div>
+
+          <div>
+            <h4 className="text-sm text-gray-400 mb-1">Process</h4>
+            <p>PID: {data.pid} | PPID: {data.ppid}</p>
+          </div>
+
+          <div className="pt-4 border-t border-gray-800">
+            <h4 className="text-sm text-gray-400 mb-3">Results</h4>
+            <div className="flex gap-2">
+              <button
+                className="px-3 py-1 bg-secondary rounded-md text-sm hover:bg-secondary/80"
+                onClick={() => onResultClick('Event Stream', data.fid)}
+              >
+                event stream
+              </button>
+              <button
+                className="px-3 py-1 bg-secondary rounded-md text-sm hover:bg-secondary/80"
+                onClick={() => onResultClick('StdErr', data.fid)}
+              >
+                stderr ({data.stderr})
+              </button>
+              <button
+                className="px-3 py-1 bg-secondary rounded-md text-sm hover:bg-secondary/80"
+                onClick={() => onResultClick('StdOut', data.fid)}
+              >
+                stdout ({data.stdout})
+              </button>
+              <button
+                className="px-3 py-1 bg-secondary rounded-md text-sm hover:bg-secondary/80"
+                onClick={() => onResultClick('Status', data.fid)}
+              >
+                status
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
 } 
