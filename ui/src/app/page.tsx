@@ -31,6 +31,7 @@ export default function DashboardPage() {
     fetchAllFlows()
   }, [])
 
+  // Centralized pin handling function
   const handlePin = async (flow: any) => {
     try {
       const isPinned = pinnedFlows.some(f => f.url === flow.url)
@@ -39,8 +40,9 @@ export default function DashboardPage() {
       } else {
         await api.pinFlow(flow.url)
       }
-      // Refresh pinned flows state after pin/unpin
+      // Refresh both pinned flows and all flows to ensure consistency
       await refreshPinnedFlows()
+      await fetchAllFlows()
     } catch (error) {
       console.error('Error handling pin:', error)
     }
@@ -82,7 +84,7 @@ export default function DashboardPage() {
                 registryDescription: "Lorem ipsum dolor sit amet",
                 flows: allFlows.map(flow => ({
                   ...flow,
-                  isPinned: isFlowPinned(flow.url)
+                  isPinned: pinnedFlows.some(f => f.url === flow.url)
                 }))
               }}
               selectedAction={selectedAction}
@@ -96,6 +98,7 @@ export default function DashboardPage() {
               )}
               selectedFlow={selectedFlow}
               onShowFlow={handleShowFlow}
+              pinnedFlows={pinnedFlows}
             />
           </div>
         </div>

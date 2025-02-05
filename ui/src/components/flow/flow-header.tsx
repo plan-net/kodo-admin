@@ -11,12 +11,7 @@ interface FlowHeaderProps {
   tags?: string[]
   url: string
   isPinned: boolean
-  onPin: (flow: {
-    url: string
-    name: string
-    description: string
-    tags: string[]
-  }) => void
+  onPin: (flow: FlowData) => Promise<void>
   onTagClick?: (tag: string) => void
 }
 

@@ -15,7 +15,7 @@ interface FlowCardProps {
     modified: string
     isPinned: boolean
   }
-  onPin: (flow: any) => void
+  onPin: (flow: FlowData) => Promise<void>
   onShow: (data: { url: string; name: string; description: string; tags: string[]; price: number; author: string; organization: string; created: string; modified: string }) => void
   selectedTags?: string[]
   onTagClick?: (tag: string) => void

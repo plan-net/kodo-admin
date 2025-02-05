@@ -90,24 +90,26 @@ interface FlowInfoProps {
       isPinned: boolean
     }>
   }
-  onPin: (flow: any) => void
+  onPin: (flow: FlowData) => Promise<void>
   selectedTags: string[]
   onTagClick: (tag: string) => void
   selectedAction: string
   onActionSelect: (action: string) => void
   selectedFlow: FlowData | null
   onShowFlow: (flow: FlowData) => void
+  pinnedFlows: Array<FlowData>
 }
 
 export function FlowInfo({ 
   data, 
-  onPin, 
+  onPin,
   selectedTags, 
   onTagClick,
   selectedAction,
   onActionSelect,
   selectedFlow,
-  onShowFlow
+  onShowFlow,
+  pinnedFlows
 }: FlowInfoProps) {
   const [filteredFlows, setFilteredFlows] = useState(data?.flows || [])
   const [flowInstances, setFlowInstances] = useState<FlowInstancesData | null>(null)
@@ -151,7 +153,10 @@ export function FlowInfo({
                 <div className="max-w-[400px] w-full">
                   <FlowCard 
                     key={flow.url}
-                    data={flow}
+                    data={{
+                      ...flow,
+                      isPinned: pinnedFlows.some(f => f.url === flow.url)
+                    }}
                     onPin={onPin}
                     onShow={() => handleShowFlow(flow)}
                     selectedTags={selectedTags}
