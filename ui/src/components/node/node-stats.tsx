@@ -38,7 +38,7 @@ interface NodeStatsProps {
 
 export function NodeStats({ data }: NodeStatsProps) {
   return (
-    <div className="space-y-6" style={{marginBottom: 20}}>
+    <div className="space-y-6" style={{marginBottom: 20, marginTop: 20}}>
       <div className="flex justify-between items-center">
         <h2 className="text-2xl font-semibold">Node status</h2>
         <ExportButton onExport={() => {}} />
