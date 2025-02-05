@@ -1,0 +1,1 @@
+1. go to keycloak admin and in themes change login/theme to mytheme

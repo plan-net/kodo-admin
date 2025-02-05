@@ -1,0 +1,13 @@
+version: '3'
+services:
+  keycloak:
+    image: quay.io/keycloak/keycloak:15.0.2
+    environment:
+      - KEYCLOAK_USER=admin
+      - KEYCLOAK_PASSWORD=admin
+      - KC_THEME=mytheme
+    volumes:
+      - ./themes/mytheme:/opt/jboss/keycloak/themes/mytheme
+    command: "-b 0.0.0.0 -Dkeycloak.theme=mytheme"
+    ports:
+      - "8081:8080"
