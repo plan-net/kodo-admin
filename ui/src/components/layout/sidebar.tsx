@@ -104,16 +104,18 @@ function SidebarContent({
                 >
                   <div className="flex items-center justify-between">
                     {isCollapsed ? (
-                      <span>{flow.name.charAt(0)}</span>
+                      <span className="w-4 text-center overflow-hidden">{flow.name.charAt(0)}</span>
                     ) : (
-                      <span>{flow.name}</span>
+                      <span className="truncate">{flow.name}</span>
                     )}
                   </div>
                 </button>
               ))
             ) : (
-              <div className="text-sm text-muted-foreground text-center py-2">
-                No pinned flows
+              <div className={`text-sm text-muted-foreground text-center py-2 ${
+                isCollapsed ? 'whitespace-nowrap overflow-hidden' : ''
+              }`}>
+                {isCollapsed ? '—' : 'No pinned flows'}
               </div>
             )}
           </nav>

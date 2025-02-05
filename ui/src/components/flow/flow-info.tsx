@@ -146,16 +146,18 @@ export function FlowInfo({
               availableTags={Array.from(new Set(data.flows.flatMap(flow => flow.tags)))}
             />
 
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 gap-6 auto-rows-fr">
               {filteredFlows.map((flow) => (
-                <FlowCard 
-                  key={flow.url}
-                  data={flow}
-                  onPin={onPin}
-                  onShow={() => handleShowFlow(flow)}
-                  selectedTags={selectedTags}
-                  onTagClick={onTagClick}
-                />
+                <div className="max-w-[400px] w-full">
+                  <FlowCard 
+                    key={flow.url}
+                    data={flow}
+                    onPin={onPin}
+                    onShow={() => handleShowFlow(flow)}
+                    selectedTags={selectedTags}
+                    onTagClick={onTagClick}
+                  />
+                </div>
               ))}
             </div>
           </div>
