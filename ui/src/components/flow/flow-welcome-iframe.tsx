@@ -4,14 +4,17 @@ import React from 'react';
 
 interface FlowWelcomeProps {
   url?: string;
+  reloadCounter?: number;
 }
 
-export function FlowWelcomeIFrame({ url }: FlowWelcomeProps) {
+export function FlowWelcomeIFrame({ url, reloadCounter }: FlowWelcomeProps) {
   const [isLoading, setIsLoading] = React.useState(true);
+  const [key, setKey] = React.useState(0);
 
   React.useEffect(() => {
     setIsLoading(true);
-  }, [url]);
+    setKey(prev => prev + 1);
+  }, [url, reloadCounter]);
 
   return (
     <div className="rounded-lg border border-border bg-background p-6 w-full h-[800px] relative">
@@ -21,6 +24,7 @@ export function FlowWelcomeIFrame({ url }: FlowWelcomeProps) {
         </div>
       )}
       <iframe
+        key={key}
         allow="same-origin"
         allowScripts
         src={url}

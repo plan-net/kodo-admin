@@ -98,6 +98,7 @@ interface FlowInfoProps {
   selectedFlow: FlowData | null
   onShowFlow: (flow: FlowData) => void
   pinnedFlows: Array<FlowData>
+  reloadCounter: number
 }
 
 export function FlowInfo({ 
@@ -109,7 +110,8 @@ export function FlowInfo({
   onActionSelect,
   selectedFlow,
   onShowFlow,
-  pinnedFlows
+  pinnedFlows,
+  reloadCounter
 }: FlowInfoProps) {
   const [filteredFlows, setFilteredFlows] = useState(data?.flows || [])
   const [flowInstances, setFlowInstances] = useState<FlowInstancesData | null>(null)
@@ -182,7 +184,10 @@ export function FlowInfo({
                   onPin={onPin}
                   onTagClick={onTagClick}
                 />
-                <FlowWelcomeIFrame url={selectedFlow.url} />
+                <FlowWelcomeIFrame 
+                  url={selectedFlow.url} 
+                  reloadCounter={reloadCounter}
+                />
               </>
             )}
           </>

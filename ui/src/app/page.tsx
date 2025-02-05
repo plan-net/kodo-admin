@@ -13,6 +13,7 @@ export default function DashboardPage() {
   const [selectedTags, setSelectedTags] = useState<string[]>([])
   const [selectedAction, setSelectedAction] = useState('Dashboard')
   const [selectedFlow, setSelectedFlow] = useState<any>(null)
+  const [reloadCounter, setReloadCounter] = useState(0)
 
   // Centralized function to refresh pinned flows state
   const refreshPinnedFlows = async () => {
@@ -55,6 +56,7 @@ export default function DashboardPage() {
   const handleShowFlow = (flow: any) => {
     setSelectedFlow(flow)
     setSelectedAction('Welcome')
+    setReloadCounter(prev => prev + 1)
   }
 
   // Helper function to check if a flow is pinned
@@ -99,6 +101,7 @@ export default function DashboardPage() {
               selectedFlow={selectedFlow}
               onShowFlow={handleShowFlow}
               pinnedFlows={pinnedFlows}
+              reloadCounter={reloadCounter}
             />
           </div>
         </div>
