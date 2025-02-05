@@ -76,8 +76,10 @@ export function FlowsRequests({ data, onFlowRemoved }: FlowsRequestsProps) {
   const [popup, setPopup] = useState<{type: string; content: string} | null>(null)
   const [statusPopup, setStatusPopup] = useState<FlowDetailsData | null>(null)
   const [flowResults, setFlowResults] = useState(data.result)
+  const [isLoading, setIsLoading] = useState(false)
 
   const handleResultClick = async (type: string, fid: string) => {
+    setIsLoading(true)
     try {
       let content = ''
       switch (type) {
@@ -94,14 +96,13 @@ export function FlowsRequests({ data, onFlowRemoved }: FlowsRequestsProps) {
         case 'StdOut':
           content = await api.getFlowOutput(fid)
           break
-        case 'State':
-          content = item.state // This comes directly from the table data
-          break
       }
       setPopup({ type, content })
     } catch (error) {
       console.error(`Error fetching ${type}:`, error)
       setPopup({ type, content: `Error fetching ${type} data` })
+    } finally {
+      setIsLoading(false)
     }
   }
 
@@ -121,6 +122,11 @@ export function FlowsRequests({ data, onFlowRemoved }: FlowsRequestsProps) {
 
   return (
     <div className="rounded-lg border border-gray-800 bg-[#101012]">
+      {isLoading && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-[70]">
+          <div className="w-8 h-8 border-4 border-gray-400 border-t-blue-500 rounded-full animate-spin"></div>
+        </div>
+      )}
       <Table>
         <TableHeader>
           <TableRow className="hover:bg-transparent border-gray-800">
