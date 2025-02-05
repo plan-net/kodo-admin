@@ -48,7 +48,6 @@ export function FlowCard({ data, onPin, onShow, selectedTags = [], onTagClick = 
 
       <div className="space-y-2">
         <div>
-          {console.log('Price value:', data.price)}
           <Badge variant="outline" className="text-xs">
             Price: ${data.price?.toFixed(2) || '0.00'}
           </Badge>

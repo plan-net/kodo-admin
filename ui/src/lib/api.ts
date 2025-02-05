@@ -242,10 +242,14 @@ export const api = {
   // Pin a flow by its URL
   pinFlow: (flowUrl: string) =>
     Promise.delay(300).then(() => {
+      console.log('Pinning flow:', flowUrl);
       const pinnedFlows = JSON.parse(localStorage.getItem('pinnedFlows') || '[]');
       if (!pinnedFlows.includes(flowUrl)) {
         pinnedFlows.push(flowUrl);
         localStorage.setItem('pinnedFlows', JSON.stringify(pinnedFlows));
+        console.log('Successfully pinned flow:', flowUrl);
+      } else {
+        console.log('Flow already pinned:', flowUrl);
       }
       return { success: true };
     }),
@@ -253,9 +257,11 @@ export const api = {
   // Unpin a flow by its URL
   unpinFlow: (flowUrl: string) =>
     Promise.delay(300).then(() => {
+      console.log('Unpinning flow:', flowUrl);
       const pinnedFlows = JSON.parse(localStorage.getItem('pinnedFlows') || '[]');
       const updatedFlows = pinnedFlows.filter((url: string) => url !== flowUrl);
       localStorage.setItem('pinnedFlows', JSON.stringify(updatedFlows));
+      console.log('Successfully unpinned flow:', flowUrl);
       return { success: true };
     }),
 

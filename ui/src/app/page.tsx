@@ -14,6 +14,7 @@ export default function DashboardPage() {
   const [selectedAction, setSelectedAction] = useState('Dashboard')
   const [selectedFlow, setSelectedFlow] = useState<any>(null)
   const [reloadCounter, setReloadCounter] = useState(0)
+  const [isLoading, setIsLoading] = useState(true)
 
   // Centralized function to refresh pinned flows state
   const refreshPinnedFlows = async () => {
@@ -28,8 +29,21 @@ export default function DashboardPage() {
   }
 
   useEffect(() => {
-    refreshPinnedFlows()
-    fetchAllFlows()
+    const loadInitialData = async () => {
+      try {
+        setIsLoading(true)
+        await Promise.all([
+          refreshPinnedFlows(),
+          fetchAllFlows()
+        ])
+      } catch (error) {
+        console.error('Error loading initial data:', error)
+      } finally {
+        setIsLoading(false)
+      }
+    }
+
+    loadInitialData()
   }, [])
 
   // Centralized pin handling function
@@ -62,6 +76,14 @@ export default function DashboardPage() {
   // Helper function to check if a flow is pinned
   const isFlowPinned = (flowUrl: string) => {
     return pinnedFlows.some(f => f.url === flowUrl)
+  }
+
+  if (isLoading) {
+    return (
+      <div className="flex h-screen w-screen items-center justify-center">
+        <div className="h-12 w-12 animate-spin rounded-full border-4 border-gray-300 border-t-blue-600"></div>
+      </div>
+    )
   }
 
   return (
