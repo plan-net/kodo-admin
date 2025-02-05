@@ -27,21 +27,23 @@ export function FlowCard({ data, onPin, onShow, selectedTags = [], onTagClick = 
   }
 
   return (
-    <div className="bg-card rounded-lg border border-border p-6 space-y-4">
-      <div className="space-y-3">
-        <h3 className="text-lg font-medium">{data.name}</h3>
-        <p className="text-sm text-muted-foreground line-clamp-3">{data.description}</p>
-      </div>
+    <div className="bg-card rounded-lg border border-border p-6 h-full flex flex-col justify-between">
+      <div className="space-y-4">
+        <div className="space-y-3">
+          <h3 className="text-lg font-medium truncate">{data.name}</h3>
+          <p className="text-sm text-muted-foreground line-clamp-3">{data.description}</p>
+        </div>
 
-      <div className="flex flex-wrap gap-1.5">
-        {data.tags.map((tag) => (
-          <FlowTag
-            key={tag}
-            tag={tag}
-            isSelected={selectedTags.includes(tag)}
-            onClick={onTagClick}
-          />
-        ))}
+        <div className="flex flex-wrap gap-1.5">
+          {data.tags.map((tag) => (
+            <FlowTag
+              key={tag}
+              tag={tag}
+              isSelected={selectedTags.includes(tag)}
+              onClick={onTagClick}
+            />
+          ))}
+        </div>
       </div>
 
       <div className="space-y-2">
