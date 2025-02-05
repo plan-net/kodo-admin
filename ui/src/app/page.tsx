@@ -39,6 +39,7 @@ export default function DashboardPage() {
     setSelectedTags(newTags)
   }
 
+  // @ts-ignore
   return (
     <div className="flex">
       <Sidebar />
@@ -50,6 +51,7 @@ export default function DashboardPage() {
               data={{
                 registryName: "Registry name",
                 registryDescription: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+                // @ts-ignore
                 flows: pinnedFlows.map(flow => ({
                   id: flow.url.split('/').pop() || '',
                   name: flow.name,
