@@ -95,6 +95,8 @@ interface FlowInfoProps {
   onTagClick: (tag: string) => void
   selectedAction: string
   onActionSelect: (action: string) => void
+  selectedFlow: FlowData | null
+  onShowFlow: (flow: FlowData) => void
 }
 
 export function FlowInfo({ 
@@ -103,10 +105,11 @@ export function FlowInfo({
   selectedTags, 
   onTagClick,
   selectedAction,
-  onActionSelect
+  onActionSelect,
+  selectedFlow,
+  onShowFlow
 }: FlowInfoProps) {
   const [filteredFlows, setFilteredFlows] = useState(data?.flows || [])
-  const [selectedFlow, setSelectedFlow] = useState<FlowData | null>(null)
   const [flowInstances, setFlowInstances] = useState<FlowInstancesData | null>(null)
 
   useEffect(() => {
@@ -123,8 +126,7 @@ export function FlowInfo({
   }
 
   const handleShowFlow = (flow: FlowData) => {
-    setSelectedFlow(flow)
-    onActionSelect('Welcome')
+    onShowFlow(flow)
   }
 
   const renderContent = () => {

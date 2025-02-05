@@ -2,80 +2,63 @@
 
 import Link from 'next/link'
 import { usePathname, useSearchParams, useRouter } from 'next/navigation'
-import { useEffect, useState, Suspense } from 'react'
+import { useEffect, useState, Suspense, useRef } from 'react'
 import { LayoutDashboard, Activity, ChevronLeft, ChevronRight } from 'lucide-react'
 import { api } from '@/lib/api'
 
+// Update Flow interface to match FlowCard's data structure exactly
 interface Flow {
+  url: string
   name: string
   description: string
-  url: string
-  heartbeat: string | null
   tags: string[]
+  price: number
+  author: string
+  organization: string
+  created: string
+  modified: string
+  isPinned: boolean
 }
 
 // Add props interface
 interface SidebarProps {
   selectedAction: string;
   onActionSelect: (action: string) => void;
+  onFlowSelect?: (flow: Flow) => void;
+  pinnedFlows: Flow[];
 }
 
-function SidebarContent({ selectedAction, onActionSelect }: SidebarProps) {
+function SidebarContent({ 
+  selectedAction, 
+  onActionSelect, 
+  onFlowSelect,
+  pinnedFlows  // Add this prop
+}: SidebarProps) {
   const pathname = usePathname()
   const searchParams = useSearchParams()
   const router = useRouter()
-  const [pinnedFlows, setPinnedFlows] = useState<Flow[]>([])
-  const [totalFlowCount, setTotalFlowCount] = useState(0)
-  const [isLoading, setIsLoading] = useState(true)
   const [isCollapsed, setIsCollapsed] = useState(false)
-  const [refreshTrigger, setRefreshTrigger] = useState(0)
   
   const selectedFlowId = searchParams.get('flowId')
-  
-  const refreshPinnedFlows = () => {
-    setRefreshTrigger(prev => prev + 1)
-  }
-  
-  useEffect(() => {
-    const fetchFlows = async () => {
-      try {
-        // Fetch both total flows and pinned flows
-        const [totalFlows, pinnedFlowsResponse] = await Promise.all([
-          api.getFlows(),
-          api.getPinnedFlows()
-        ])
-        console.log(totalFlows);
-        console.log(pinnedFlowsResponse);
-        setTotalFlowCount(totalFlows.items.length)
-        setPinnedFlows(pinnedFlowsResponse.items)
-      } catch (error) {
-        console.error('Failed to fetch flows:', error)
-      } finally {
-        setIsLoading(false)
-      }
+  const showFlowRef = useRef<((flow: Flow) => void) | null>(null)
+
+  const handleFlowClick = (flow: Flow) => {
+    if (onFlowSelect) {  // Use the passed down prop instead of showFlowRef
+      onFlowSelect(flow)
     }
-
-    fetchFlows()
-  }, [refreshTrigger])
-
-  // Add event listener for refresh
-  useEffect(() => {
-    const handleRefresh = () => {
-      setRefreshTrigger(prev => prev + 1)
-    }
-
-    window.addEventListener('refresh-sidebar', handleRefresh)
-    return () => window.removeEventListener('refresh-sidebar', handleRefresh)
-  }, [])
-
-  const handleFlowClick = (flowUrl: string) => {
-    const flowId = flowUrl.split('/').pop()
-    router.push(`/?flowId=${flowId}`)
   }
 
   return (
     <div 
       data-sidebar 
+      ref={(el) => {
+        if (el) {
+          // @ts-ignore - we'll add a custom property to the element
+          el.setShowFlow = (fn: (flow: Flow) => void) => {
+            showFlowRef.current = fn
+          }
+        }
+      }}
       className={`${isCollapsed ? 'w-16' : 'w-64'} h-screen text-gray-100 fixed left-0 top-0 flex flex-col border-r border-border/50 transition-all duration-300`}
     >
       <div className="p-4 flex-1">
@@ -99,21 +82,15 @@ function SidebarContent({ selectedAction, onActionSelect }: SidebarProps) {
         <div>
           {!isCollapsed && (
             <h2 className="text-xs font-medium text-muted-foreground uppercase mb-2 px-2">
-              Pinned ({pinnedFlows.length}/{totalFlowCount})
+              Pinned ({pinnedFlows.length})
             </h2>
           )}
           <nav className="space-y-1 bg-card-background p-2 rounded-lg border border-border/50">
-            {isLoading ? (
-              <div className="space-y-2">
-                {[1, 2, 3].map((n) => (
-                  <div key={n} className="h-10 bg-gray-800/20 rounded-lg animate-pulse" />
-                ))}
-              </div>
-            ) : pinnedFlows.length > 0 ? (
+            {pinnedFlows.length > 0 ? (
               pinnedFlows.map((flow) => (
                 <button
                   key={flow.url}
-                  onClick={() => handleFlowClick(flow.url)}
+                  onClick={() => handleFlowClick(flow)}
                   className={`w-full text-left px-3 py-2 rounded-lg text-sm transition-colors ${
                     selectedFlowId === flow.url.split('/').pop()
                       ? 'bg-card-hover text-foreground'
@@ -159,10 +136,15 @@ function SidebarContent({ selectedAction, onActionSelect }: SidebarProps) {
 }
 
 // Update Sidebar component to pass through props
-export function Sidebar({ selectedAction, onActionSelect }: SidebarProps) {
+export function Sidebar({ selectedAction, onActionSelect, onFlowSelect, pinnedFlows }: SidebarProps) {
   return (
     <Suspense fallback={<div>Loading sidebar...</div>}>
-      <SidebarContent selectedAction={selectedAction} onActionSelect={onActionSelect} />
+      <SidebarContent 
+        selectedAction={selectedAction} 
+        onActionSelect={onActionSelect}
+        onFlowSelect={onFlowSelect}
+        pinnedFlows={pinnedFlows}
+      />
     </Suspense>
   )
 }

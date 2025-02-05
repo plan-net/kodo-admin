@@ -10,6 +10,7 @@ export default function DashboardPage() {
   const [pinnedFlows, setPinnedFlows] = useState<any[]>([])
   const [selectedTags, setSelectedTags] = useState<string[]>([])
   const [selectedAction, setSelectedAction] = useState('Dashboard')
+  const [selectedFlow, setSelectedFlow] = useState<any>(null)
 
   useEffect(() => {
     const fetchPinnedFlows = async () => {
@@ -40,11 +41,18 @@ export default function DashboardPage() {
     setSelectedTags(newTags)
   }
 
+  const handleShowFlow = (flow: any) => {
+    setSelectedFlow(flow)
+    setSelectedAction('Welcome')
+  }
+
   return (
     <div className="flex">
       <Sidebar 
         selectedAction={selectedAction}
         onActionSelect={setSelectedAction}
+        pinnedFlows={pinnedFlows}
+        onFlowSelect={handleShowFlow}
       />
 
       <main className="flex-1 ml-[250px] min-h-screen text-gray-100">
@@ -53,7 +61,7 @@ export default function DashboardPage() {
             <FlowInfo 
               data={{
                 registryName: "Registry name",
-                registryDescription: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+                registryDescription: "Lorem ipsum dolor sit amet",
                 flows: pinnedFlows.map(flow => ({
                   id: flow.url.split('/').pop() || '',
                   name: flow.name,
@@ -65,7 +73,7 @@ export default function DashboardPage() {
                   created: flow.created,
                   modified: flow.modified,
                   isPinned: true
-                })) || []
+                }))
               }}
               selectedAction={selectedAction}
               onActionSelect={setSelectedAction}
@@ -76,6 +84,17 @@ export default function DashboardPage() {
                   ? selectedTags.filter(t => t !== tag)
                   : [...selectedTags, tag]
               )}
+              selectedFlow={selectedFlow}
+              onShowFlow={handleShowFlow}
+              ref={(flowInfo) => {
+                if (flowInfo) {
+                  const sidebar = document.querySelector('[data-sidebar]')
+                  if (sidebar) {
+                    // @ts-ignore - use the custom setShowFlow method
+                    sidebar.setShowFlow((flow) => flowInfo.handleShowFlow(flow))
+                  }
+                }
+              }}
             />
           </div>
         </div>
