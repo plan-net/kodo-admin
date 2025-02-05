@@ -116,16 +116,9 @@ export function Sidebar() {
                 >
                   <div className="flex items-center justify-between">
                     {isCollapsed ? (
-                      <span className={`w-2 h-2 rounded-full mx-auto ${
-                        flow.heartbeat ? 'bg-green-500' : 'bg-red-500'
-                      }`} />
+                      <span>{flow.name.charAt(0)}</span>
                     ) : (
-                      <>
-                        <span>{flow.name}</span>
-                        <span className={`w-2 h-2 rounded-full ${
-                          flow.heartbeat ? 'bg-green-500' : 'bg-red-500'
-                        }`} />
-                      </>
+                      <span>{flow.name}</span>
                     )}
                   </div>
                 </button>

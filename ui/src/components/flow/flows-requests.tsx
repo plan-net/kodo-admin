@@ -198,4 +198,36 @@ export function FlowsRequests({ data, onFlowRemoved }: FlowsRequestsProps) {
       )}
     </div>
   )
+}
+
+interface ResultPopupProps {
+  content: string
+  onClose: () => void
+}
+
+function ResultPopup({ content, onClose }: ResultPopupProps) {
+  return (
+    <div 
+      className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50"
+      onClick={onClose}
+    >
+      <div 
+        className="bg-[#101012] rounded-lg p-4 w-full max-w-3xl max-h-[80vh] overflow-auto border border-gray-800"
+        onClick={e => e.stopPropagation()}
+      >
+        <div className="flex justify-between items-center mb-4">
+          <h3 className="text-lg font-medium">Result</h3>
+          <button 
+            onClick={onClose}
+            className="p-1 hover:bg-gray-800 rounded"
+          >
+            ✕
+          </button>
+        </div>
+        <pre className="whitespace-pre-wrap font-mono text-sm bg-black/30 p-4 rounded">
+          {content}
+        </pre>
+      </div>
+    </div>
+  )
 } 

@@ -8,7 +8,7 @@ import { FlowCard } from './flow-card'
 import { TopFlowBar } from './top-flow-bar'
 import { NodeLogs } from '@/components/node/node-logs'
 import { NodeStats } from '@/components/node/node-stats'
-import { FlowWelcome } from './flow-welcome'
+import { FlowWelcomeIFrame } from './flow-welcome-iframe'
 import { FlowsRequests } from './flows-requests'
 import { api } from '@/lib/api'
 
@@ -155,7 +155,7 @@ export function FlowInfo({
         return (
           <>
             {selectedFlow?.url && (
-              <FlowWelcome html={selectedFlow.url} />
+              <FlowWelcomeIFrame url={selectedFlow.url} />
             )}
           </>
         )
