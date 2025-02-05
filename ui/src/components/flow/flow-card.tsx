@@ -1,8 +1,5 @@
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
-import { useState, useEffect } from "react"
-import { api } from "@/lib/api"
-import { refreshSidebarPinnedFlows } from '@/components/layout/sidebar'
 import { FlowTag } from "./flow-tag"
 
 interface FlowCardProps {
@@ -25,30 +22,8 @@ interface FlowCardProps {
 }
 
 export function FlowCard({ data, onPin, onShow, selectedTags = [], onTagClick = () => {} }: FlowCardProps) {
-  const [isPinned, setIsPinned] = useState(data.isPinned)
-
-  useEffect(() => {
-    api.isFlowPinned(data.url).then(setIsPinned)
-  }, [data.url])
-
-  const handlePinClick = async () => {
-    try {
-      if (isPinned) {
-        await api.unpinFlow(data.url)
-        setIsPinned(false)
-      } else {
-        await api.pinFlow(data.url)
-        setIsPinned(true)
-      }
-      
-      // Call the onPin prop handler
-      onPin(data)
-      
-      // Trigger sidebar refresh
-      refreshSidebarPinnedFlows()
-    } catch (error) {
-      console.error('Error toggling pin status:', error)
-    }
+  const handlePinClick = () => {
+    onPin(data)
   }
 
   return (
@@ -83,7 +58,7 @@ export function FlowCard({ data, onPin, onShow, selectedTags = [], onTagClick = 
             onClick={handlePinClick}
             className="flex-1"
           >
-            {isPinned ? 'Unpin' : 'Pin to Favorites'}
+            {data.isPinned ? 'Unpin' : 'Pin to Favorites'}
           </Button>
           <Button
             variant="default"

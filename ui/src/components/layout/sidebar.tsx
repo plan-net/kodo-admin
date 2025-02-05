@@ -147,9 +147,4 @@ export function Sidebar({ selectedAction, onActionSelect, onFlowSelect, pinnedFl
       />
     </Suspense>
   )
-}
-
-// Simplify the refresh function
-export const refreshSidebarPinnedFlows = () => {
-  window.dispatchEvent(new Event('refresh-sidebar'))
 } 

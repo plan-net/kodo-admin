@@ -9,8 +9,14 @@ interface FlowHeaderProps {
   description: string
   subtitle?: string
   tags?: string[]
-  url: string // Make url required since we need it for pinning
-  isPinned?: boolean
+  url: string
+  isPinned: boolean
+  onPin: (flow: {
+    url: string
+    name: string
+    description: string
+    tags: string[]
+  }) => void
   onTagClick?: (tag: string) => void
 }
 
@@ -20,30 +26,18 @@ export function FlowHeader({
   subtitle,
   tags = [],
   url,
-  isPinned: initialIsPinned = false,
+  isPinned,
+  onPin,
   onTagClick 
 }: FlowHeaderProps) {
-  const [isPinned, setIsPinned] = useState(initialIsPinned)
 
-  useEffect(() => {
-    api.isFlowPinned(url).then(setIsPinned)
-  }, [url])
-
-  const handlePinClick = async () => {
-    try {
-      if (isPinned) {
-        await api.unpinFlow(url)
-        setIsPinned(false)
-      } else {
-        await api.pinFlow(url)
-        setIsPinned(true)
-      }
-      
-      // Trigger sidebar refresh
-      refreshSidebarPinnedFlows()
-    } catch (error) {
-      console.error('Error toggling pin status:', error)
-    }
+  const handlePinClick = () => {
+    onPin({
+      url,
+      name,
+      description,
+      tags
+    })
   }
 
   return (

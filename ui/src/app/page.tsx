@@ -8,16 +8,26 @@ import { refreshSidebarPinnedFlows } from '@/components/layout/sidebar'
 
 export default function DashboardPage() {
   const [pinnedFlows, setPinnedFlows] = useState<any[]>([])
+  const [allFlows, setAllFlows] = useState<any[]>([])
   const [selectedTags, setSelectedTags] = useState<string[]>([])
   const [selectedAction, setSelectedAction] = useState('Dashboard')
   const [selectedFlow, setSelectedFlow] = useState<any>(null)
 
+  // Centralized function to refresh pinned flows state
+  const refreshPinnedFlows = async () => {
+    const data = await api.getPinnedFlows()
+    setPinnedFlows(data.items)
+  }
+
+  // Add this function to fetch all flows
+  const fetchAllFlows = async () => {
+    const data = await api.getFlows()
+    setAllFlows(data.items)
+  }
+
   useEffect(() => {
-    const fetchPinnedFlows = async () => {
-      const data = await api.getPinnedFlows()
-      setPinnedFlows(data.items)
-    }
-    fetchPinnedFlows()
+    refreshPinnedFlows()
+    fetchAllFlows()
   }, [])
 
   const handlePin = async (flow: any) => {
@@ -25,13 +35,11 @@ export default function DashboardPage() {
       const isPinned = pinnedFlows.some(f => f.url === flow.url)
       if (isPinned) {
         await api.unpinFlow(flow.url)
-        setPinnedFlows(prev => prev.filter(f => f.url !== flow.url))
       } else {
         await api.pinFlow(flow.url)
-        setPinnedFlows(prev => [...prev, flow])
       }
-      // Trigger sidebar refresh
-      refreshSidebarPinnedFlows()
+      // Refresh pinned flows state after pin/unpin
+      await refreshPinnedFlows()
     } catch (error) {
       console.error('Error handling pin:', error)
     }
@@ -44,6 +52,11 @@ export default function DashboardPage() {
   const handleShowFlow = (flow: any) => {
     setSelectedFlow(flow)
     setSelectedAction('Welcome')
+  }
+
+  // Helper function to check if a flow is pinned
+  const isFlowPinned = (flowUrl: string) => {
+    return pinnedFlows.some(f => f.url === flowUrl)
   }
 
   return (
@@ -62,17 +75,9 @@ export default function DashboardPage() {
               data={{
                 registryName: "Registry name",
                 registryDescription: "Lorem ipsum dolor sit amet",
-                flows: pinnedFlows.map(flow => ({
-                  id: flow.url.split('/').pop() || '',
-                  name: flow.name,
-                  description: flow.description,
-                  tags: flow.tags,
-                  price: 42.00,
-                  author: flow.author,
-                  organization: flow.organization,
-                  created: flow.created,
-                  modified: flow.modified,
-                  isPinned: true
+                flows: allFlows.map(flow => ({
+                  ...flow,
+                  isPinned: isFlowPinned(flow.url)
                 }))
               }}
               selectedAction={selectedAction}

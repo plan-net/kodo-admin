@@ -113,6 +113,10 @@ export function FlowInfo({
   const [flowInstances, setFlowInstances] = useState<FlowInstancesData | null>(null)
 
   useEffect(() => {
+    setFilteredFlows(data?.flows || [])
+  }, [data.flows])
+
+  useEffect(() => {
    // if (selectedAction === 'Requests') {
       api.getFlowInstances()
         .then(data => setFlowInstances(data))
