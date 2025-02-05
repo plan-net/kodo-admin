@@ -178,7 +178,8 @@ export function FlowInfo({
                   description={selectedFlow.description}
                   tags={selectedFlow.tags}
                   url={selectedFlow.url}
-                  isPinned={selectedFlow.isPinned}
+                  isPinned={pinnedFlows.some(f => f.url === selectedFlow.url)}
+                  onPin={onPin}
                   onTagClick={onTagClick}
                 />
                 <FlowWelcomeIFrame url={selectedFlow.url} />
@@ -228,7 +229,8 @@ export function FlowInfo({
               description={selectedFlow?.description || data.registryDescription}
               tags={selectedFlow?.tags || []}
               url={selectedFlow?.url || ''}
-              isPinned={selectedFlow?.isPinned}
+              isPinned={selectedFlow?.isPinned || false}
+              onPin={onPin}
               onTagClick={onTagClick}
             />
             <NodeStats data={{

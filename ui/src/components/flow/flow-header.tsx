@@ -26,12 +26,18 @@ export function FlowHeader({
   onTagClick 
 }: FlowHeaderProps) {
 
-  const handlePinClick = () => {
-    onPin({
+  const handlePinClick = async () => {
+    await onPin({
       url,
       name,
       description,
-      tags
+      tags,
+      isPinned,
+      price: 0,
+      author: '',
+      organization: '',
+      created: '',
+      modified: ''
     })
   }
 
