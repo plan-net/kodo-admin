@@ -18,7 +18,17 @@ export function FlowWelcome({ html }: FlowWelcomeProps) {
         if (!response.ok) {
           throw new Error('Failed to fetch content')
         }
-        const htmlContent = await response.text()
+        let htmlContent = await response.text()
+        
+        // Remove existing stylesheet links and modify classes to use Tailwind
+        htmlContent = htmlContent
+          .replace(/<link.*?>/g, '') // Remove external stylesheets
+          .replace(/<header>/g, '<header class="mb-8">')
+          .replace(/<h1>/g, '<h1 class="text-3xl font-bold text-foreground mb-4">')
+          .replace(/<p>/g, '<p class="text-secondary-foreground mb-4">')
+          .replace(/<form/g, '<form class="space-y-4"')
+          .replace(/<input type="submit"/g, '<input type="submit" class="bg-primary text-primary-foreground px-4 py-2 rounded-lg hover:bg-primary/90 cursor-pointer"')
+
         setContent(htmlContent)
       } catch (err) {
         setError(err instanceof Error ? err.message : 'Failed to load content')
@@ -30,8 +40,18 @@ export function FlowWelcome({ html }: FlowWelcomeProps) {
     fetchContent()
   }, [html])
 
+  const handleFormSubmit = (e: React.FormEvent) => {
+    e.preventDefault()
+    // Handle the form submission here
+    // You might want to make an API call or handle the navigation
+  }
+
   if (isLoading) {
-    return <div className="animate-pulse h-32 bg-secondary/20 rounded-lg" />
+    return (
+      <div className="flex items-center justify-center h-32">
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-gray-400" />
+      </div>
+    )
   }
 
   if (error) {

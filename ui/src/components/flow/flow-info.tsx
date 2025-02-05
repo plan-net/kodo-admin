@@ -7,16 +7,10 @@ import { FlowSearch } from './flow-search'
 import { FlowCard } from './flow-card'
 import { TopFlowBar } from './top-flow-bar'
 import { NodeLogs } from '@/components/node/node-logs'
-import { NodeRevenueChart } from '@/components/node/revenue-chart'
-import { NodeRevenueStats } from '@/components/node/revenue-stats'
-import { NodeInput } from '@/components/node/node-input'
-import { NodeOutput } from '@/components/node/node-output'
-import { ExportButton } from "@/components/ui/export-button"
 import { NodeStats } from '@/components/node/node-stats'
 import { FlowWelcome } from './flow-welcome'
 import { FlowsRequests } from './flows-requests'
 import { api } from '@/lib/api'
-import { FlowOutput } from './flow-output'
 
 interface FlowData {
   id?: string
@@ -134,10 +128,6 @@ export function FlowInfo({
       case 'Welcome':
         return (
           <div className="space-y-8">
-            <FlowHeader 
-              name={data.registryName}
-              description={data.registryDescription}
-            />
             
             <FlowSearch 
               onSearchChange={handleSearchResults}
@@ -164,117 +154,18 @@ export function FlowInfo({
       case 'Run':
         return (
           <>
-            <FlowHeader 
-              name={selectedFlow?.name || data.registryName}
-              description={selectedFlow?.description || data.registryDescription}
-            />
             {selectedFlow?.url && (
               <FlowWelcome html={selectedFlow.url} />
             )}
-            <NodeStats data={{
-              status: {
-                attached: {
-                  status: true,
-                  timestamp: selectedFlow?.created || ''
-                },
-                responds: {
-                  status: true,
-                  value: '200ms'
-                },
-                taskStatus: {
-                  status: 'Running',
-                  message: 'Active'
-                },
-                callsAmount: {
-                  value: selectedFlow?.requests?.length.toString() || '0',
-                  trend: 'up'
-                },
-                maxWorkers: {
-                  value: 5,
-                  description: 'Active workers'
-                },
-                queueLength: {
-                  value: 0,
-                  description: 'Pending requests'
-                }
-              }
-            }} />
-            <div className="grid grid-cols-2 gap-6">
-              <NodeInput 
-                onSubmit={(data) => console.log('Submit:', data)}
-                onClear={() => console.log('Clear input')}
-              />
-              <FlowOutput
-                flowId= '67a137662c614df69430c63f'
-                //initialOutput=''
-                // initialSteps=''
-              />
-            </div>
-            
-            <div className="mt-8">
-              <div className="flex items-center justify-between mb-4">
-                <h2 className="text-xl font-semibold">Recent Requests</h2>
-                <div className="flex items-center gap-4">
-                  <button 
-                    className="flex items-center gap-2 bg-secondary px-4 py-2 rounded-lg hover:bg-secondary/80"
-                    onClick={() => setSelectedAction('Requests')}
-                  >
-                    <span>View All</span>
-                  </button>
-                </div>
-              </div>
-              {flowInstances ? (
-                <FlowsRequests data={{
-                  ...flowInstances,
-                  result: flowInstances.result.slice(0, 3) // Only show first 3 results
-                }} />
-              ) : (
-                <div className="flex items-center justify-center h-32">
-                  <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-gray-400" />
-                </div>
-              )}
-            </div>
           </>
         )
 
-      case 'Requests':
+      case 'Jobs':
         return (
           <>
-            <FlowHeader 
-              name={selectedFlow?.name || data.registryName}
-              description={selectedFlow?.description || data.registryDescription}
-            />
-            <NodeStats data={{
-              status: {
-                attached: {
-                  status: true,
-                  timestamp: selectedFlow?.created || ''
-                },
-                responds: {
-                  status: true,
-                  value: '200ms'
-                },
-                taskStatus: {
-                  status: 'Running',
-                  message: 'Active'
-                },
-                callsAmount: {
-                  value: selectedFlow?.requests?.length.toString() || '0',
-                  trend: 'up'
-                },
-                maxWorkers: {
-                  value: 5,
-                  description: 'Active workers'
-                },
-                queueLength: {
-                  value: 0,
-                  description: 'Pending requests'
-                }
-              }
-            }} />
             <div className="mt-8">
               <div className="flex items-center justify-between mb-4">
-                <h2 className="text-xl font-semibold">Flow's Requests Table</h2>
+                <h2 className="text-xl font-semibold">Flow's Jobs Table</h2>
                 <div className="flex items-center gap-4">
                   <div className="flex items-center gap-2 bg-secondary px-4 py-2 rounded-lg">
                     <span className="text-muted">Jan 20, 2023 - Feb 09, 2023</span>
@@ -285,7 +176,14 @@ export function FlowInfo({
                 </div>
               </div>
               {flowInstances ? (
-                <FlowsRequests data={flowInstances} />
+                <FlowsRequests 
+                  data={flowInstances} 
+                  onFlowRemoved={() => {
+                    api.getFlowInstances()
+                      .then(data => setFlowInstances(data))
+                      .catch(error => console.error('Error fetching flow instances:', error))
+                  }}
+                />
               ) : (
                 <div className="flex items-center justify-center h-32">
                   <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-gray-400" />
@@ -363,38 +261,6 @@ export function FlowInfo({
                 <NodeLogs nodeId={selectedFlow?.id || ''} />
               )}
             </div>
-          </>
-        )
-
-      case 'Usage':
-        const mockRevenueData = {
-          monthly: [
-            { month: 'Jan', value: 1200, growth: 10 },
-            { month: 'Feb', value: 1400, growth: 15 },
-          ],
-          current: {
-            percentage: 75,
-            amount: 1500,
-            growth: 12
-          }
-        }
-
-        return (
-          <>
-            <FlowHeader 
-              name={selectedFlow?.name || data.registryName}
-              description={selectedFlow?.description || data.registryDescription}
-            />
-            <div className="rounded-lg border border-border bg-background p-6 w-full" style={{marginBottom: 20}}>
-              <div className="flex items-center justify-between mb-8">
-                <h2 className="text-xl font-semibold">Usage Over Time</h2>
-                <ExportButton onExport={() => {}} />
-              </div>
-              <div className="h-[300px] w-full">
-                <NodeRevenueChart data={mockRevenueData} />
-              </div>
-            </div>
-            <NodeRevenueStats data={mockRevenueData} />
           </>
         )
 

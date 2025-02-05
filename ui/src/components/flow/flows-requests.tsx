@@ -8,6 +8,14 @@ import {
 } from "@/components/ui/table"
 import { Badge } from "@/components/ui/badge"
 import { MoreVertical } from "lucide-react"
+import { useState } from "react"
+import { api } from '@/lib/api'
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu"
 
 interface FlowsRequestsProps {
   data: {
@@ -26,14 +34,57 @@ interface FlowsRequestsProps {
       }
       inactive: boolean | null
       alive: boolean | null
+      event_stream: string
+      stderr: string
+      stdout: string
+      state: string
     }>
     total: number
     p: number
     pp: number
   }
+  onFlowRemoved?: () => void
 }
 
-export function FlowsRequests({ data }: FlowsRequestsProps) {
+export function FlowsRequests({ data, onFlowRemoved }: FlowsRequestsProps) {
+  const [popup, setPopup] = useState<{type: string; content: string} | null>(null)
+
+  const handleResultClick = async (type: string, fid: string) => {
+    try {
+      let content = ''
+      switch (type) {
+        case 'Event Stream':
+          content = await api.getFlowSteps(fid)
+          break
+        case 'StdErr':
+          content = await api.getFlowErrors(fid)
+          break
+        case 'StdOut':
+          content = await api.getFlowOutput(fid)
+          break
+        case 'State':
+          content = item.state // This comes directly from the table data
+          break
+      }
+      setPopup({ type, content })
+    } catch (error) {
+      console.error(`Error fetching ${type}:`, error)
+      setPopup({ type, content: `Error fetching ${type} data` })
+    }
+  }
+
+  const handleRemoveFlow = async (fid: string) => {
+    try {
+      await api.removeFlow(fid)
+      if (onFlowRemoved) {
+        onFlowRemoved()
+      }
+    } catch (error) {
+      console.error('Error removing flow:', error)
+      // You might want to show an error message to the user
+    }
+  }
+
   if (!data?.result) return null
 
   return (
@@ -49,68 +100,102 @@ export function FlowsRequests({ data }: FlowsRequestsProps) {
             <TableHead className="text-gray-400">Duration</TableHead>
             <TableHead className="text-gray-400">Author</TableHead>
             <TableHead className="text-gray-400">Status</TableHead>
-            <TableHead className="text-gray-400">Tags</TableHead>
+            <TableHead className="text-gray-400">Result</TableHead>
             <TableHead className="text-gray-400 w-[40px]"></TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
-          {data.result.map((flow) => (
-            <TableRow key={flow.fid} className="border-gray-800">
+          {data.result.map((item) => (
+            <TableRow key={item.fid} className="border-gray-800">
               <TableCell>
                 <input type="checkbox" className="rounded border-gray-700" />
               </TableCell>
               <TableCell>
                 <div className="flex flex-col">
-                  <span>{flow.flow.name}</span>
-                  <span className="text-sm text-gray-500 truncate max-w-[200px]">{flow.flow.description}</span>
+                  <span>{item.flow.name}</span>
+                  <span className="text-sm text-gray-500 truncate max-w-[200px]">{item.flow.description}</span>
                 </div>
               </TableCell>
               <TableCell>
                 <div className="flex flex-col">
-                  <span>{new Date(flow.start_time).toLocaleDateString()}</span>
-                  <span className="text-sm text-gray-500">{new Date(flow.start_time).toLocaleTimeString()}</span>
+                  <span>{new Date(item.start_time).toLocaleDateString()}</span>
+                  <span className="text-sm text-gray-500">{new Date(item.start_time).toLocaleTimeString()}</span>
                 </div>
               </TableCell>
               <TableCell>
-                <span>{flow.total.toFixed(2)}s</span>
+                <span>{item.total.toFixed(2)}s</span>
               </TableCell>
               <TableCell>
-                <span>{flow.flow.author}</span>
+                <span>{item.flow.author}</span>
               </TableCell>
               <TableCell>
                 <Badge 
                   variant={
-                    flow.status === 'running' ? 'default' :
-                    flow.status === 'error' ? 'destructive' :
-                    flow.status === 'pending' ? 'secondary' :
+                    item.status === 'running' ? 'default' :
+                    item.status === 'error' ? 'destructive' :
+                    item.status === 'pending' ? 'secondary' :
                     'success'
                   }
                 >
-                  {flow.status}
+                  {item.status}
                 </Badge>
               </TableCell>
               <TableCell>
-                <div className="flex gap-1 flex-wrap">
-                  {flow.flow.tags.map((tag) => (
-                    <Badge 
-                      key={tag}
-                      variant="outline"
-                      className="border-blue-500/20 bg-blue-500/10 text-blue-500"
-                    >
-                      {tag}
-                    </Badge>
-                  ))}
+                <div className="flex gap-2">
+                  <button
+                    className="px-3 py-1 bg-secondary rounded-md text-sm hover:bg-secondary/80"
+                    onClick={() => handleResultClick('Event Stream', item.fid)}
+                  >
+                    event stream
+                  </button>
+                  <button
+                    className="px-3 py-1 bg-secondary rounded-md text-sm hover:bg-secondary/80"
+                    onClick={() => handleResultClick('StdErr', item.fid)}
+                  >
+                    stderr
+                  </button>
+                  <button
+                    className="px-3 py-1 bg-secondary rounded-md text-sm hover:bg-secondary/80"
+                    onClick={() => handleResultClick('StdOut', item.fid)}
+                  >
+                    stdout
+                  </button>
+                  <button
+                    className="px-3 py-1 bg-secondary rounded-md text-sm hover:bg-secondary/80"
+                    onClick={() => handleResultClick('State', item.fid)}
+                  >
+                    state
+                  </button>
                 </div>
               </TableCell>
               <TableCell>
-                <button className="p-2 hover:bg-gray-800 rounded-lg">
-                  <MoreVertical className="w-4 h-4" />
-                </button>
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <button className="p-2 hover:bg-gray-800 rounded-lg">
+                      <MoreVertical className="w-4 h-4" />
+                    </button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent align="end">
+                    <DropdownMenuItem
+                      className="text-red-500 focus:text-red-500"
+                      onClick={() => handleRemoveFlow(item.fid)}
+                    >
+                      Remove
+                    </DropdownMenuItem>
+                  </DropdownMenuContent>
+                </DropdownMenu>
               </TableCell>
             </TableRow>
           ))}
         </TableBody>
       </Table>
+
+      {popup && (
+        <ResultPopup
+          content={popup.content}
+          onClose={() => setPopup(null)}
+        />
+      )}
     </div>
   )
 } 
