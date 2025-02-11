@@ -5,6 +5,7 @@ import { Sidebar } from '@/components/layout/sidebar'
 import { FlowInfo } from '@/components/flow/flow-info'
 import { api } from '@/lib/api'
 import { refreshSidebarPinnedFlows } from '@/components/layout/sidebar'
+import  NextAuthProvider  from '@/app/next-auth-provider'
 
 export default function DashboardPage() {
   const [isCollapsed, setIsCollapsed] = useState(false)
@@ -87,8 +88,9 @@ export default function DashboardPage() {
   }
 
   return (
+  <NextAuthProvider>
     <div className="flex h-screen w-screen overflow-hidden">
-      <Sidebar 
+      <Sidebar
         selectedAction={selectedAction}
         onActionSelect={setSelectedAction}
         pinnedFlows={pinnedFlows}
@@ -102,7 +104,7 @@ export default function DashboardPage() {
       }`}>
         <div className="h-full overflow-auto">
           <div className="p-8 space-y-8">
-            <FlowInfo 
+            <FlowInfo
               data={{
                 registryName: "Registry name",
                 registryDescription: "Lorem ipsum dolor sit amet",
@@ -129,5 +131,6 @@ export default function DashboardPage() {
         </div>
       </main>
     </div>
+  </NextAuthProvider>
   )
 }

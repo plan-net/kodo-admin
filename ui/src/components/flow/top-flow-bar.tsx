@@ -1,6 +1,7 @@
 'use client'
 
 import { Button } from "@/components/ui/button"
+import LoginButton from '@/components/ui/login-btn' 
 
 interface TopFlowBarProps {
   selectedAction: string
@@ -32,7 +33,7 @@ export function TopFlowBar({ selectedAction, setSelectedAction, hasSelectedFlow 
           );
         })}
       </div>
-      <Button variant="outline">Profile</Button>
+      <LoginButton />
     </div>
   )
 } 
