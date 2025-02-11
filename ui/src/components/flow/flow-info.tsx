@@ -7,6 +7,15 @@ import { FlowSearch } from './flow-search'
 import { FlowCard } from './flow-card'
 import { TopFlowBar } from './top-flow-bar'
 import { NodeLogs } from '@/components/node/node-logs'
+import { RequestsTable } from '@/components/node/requests-table'
+import { NodeRevenueChart } from '@/components/node/revenue-chart'
+import { NodeRevenueStats } from '@/components/node/revenue-stats'
+import { NodeInput } from '@/components/node/node-input'
+import { NodeOutput } from '@/components/node/node-output'
+import { NodeMainSettings } from '@/components/node/node-main-settings'
+import { NodePricing } from '@/components/node/node-pricing'
+import { NodeDangerZone } from '@/components/node/node-danger-zone'
+import { ExportButton } from "@/components/ui/export-button"
 import { NodeStats } from '@/components/node/node-stats'
 import { FlowWelcomeIFrame } from './flow-welcome-iframe'
 import { FlowsRequests } from './flows-requests'
@@ -113,6 +122,7 @@ export function FlowInfo({
   pinnedFlows,
   reloadCounter
 }: FlowInfoProps) {
+  const [selectedAction, setSelectedAction] = useState('Welcome')
   const [filteredFlows, setFilteredFlows] = useState(data?.flows || [])
   const [flowInstances, setFlowInstances] = useState<FlowInstancesData | null>(null)
 
@@ -142,7 +152,11 @@ export function FlowInfo({
       case 'Dashboard':
         return (
           <div className="space-y-8">
-            
+            <FlowHeader
+              name={data.registryName}
+              description={data.registryDescription}
+            />
+
             <FlowSearch 
               onSearchChange={handleSearchResults}
               selectedTags={selectedTags}
@@ -153,7 +167,7 @@ export function FlowInfo({
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 gap-6 auto-rows-fr">
               {filteredFlows.map((flow) => (
                 <div className="h-[280px] max-w-[400px] w-full" key={flow.url}>
-                  <FlowCard 
+                  <FlowCard
                     key={flow.url}
                     data={{
                       ...flow,
@@ -175,7 +189,7 @@ export function FlowInfo({
           <>
             {selectedFlow?.url && (
               <>
-                <FlowHeader 
+                <FlowHeader
                   name={selectedFlow.name}
                   description={selectedFlow.description}
                   tags={selectedFlow.tags}
@@ -184,8 +198,8 @@ export function FlowInfo({
                   onPin={onPin}
                   onTagClick={onTagClick}
                 />
-                <FlowWelcomeIFrame 
-                  url={selectedFlow.url} 
+                <FlowWelcomeIFrame
+                  url={selectedFlow.url}
                   reloadCounter={reloadCounter}
                 />
               </>
@@ -196,6 +210,38 @@ export function FlowInfo({
       case 'Jobs':
         return (
           <>
+            <FlowHeader
+              name={selectedFlow?.name || data.registryName}
+              description={selectedFlow?.description || data.registryDescription}
+            />
+            <NodeStats data={{
+              status: {
+                attached: {
+                  status: true,
+                  timestamp: selectedFlow?.created || ''
+                },
+                responds: {
+                  status: true,
+                  value: '200ms'
+                },
+                taskStatus: {
+                  status: 'Running',
+                  message: 'Active'
+                },
+                callsAmount: {
+                  value: selectedFlow?.requests?.length.toString() || '0',
+                  trend: 'up'
+                },
+                maxWorkers: {
+                  value: 5,
+                  description: 'Active workers'
+                },
+                queueLength: {
+                  value: 0,
+                  description: 'Pending requests'
+                }
+              }
+            }} />
             <div className="mt-8">
               <div className="flex items-center justify-between mb-4">
                 <h2 className="text-xl font-semibold">Flow's Jobs Table</h2>
@@ -209,8 +255,8 @@ export function FlowInfo({
                 </div>
               </div>
               {flowInstances ? (
-                <FlowsRequests 
-                  data={flowInstances} 
+                <FlowsRequests
+                  data={flowInstances}
                   onFlowRemoved={() => {
                     api.getFlowInstances()
                       .then(data => setFlowInstances(data))
@@ -299,6 +345,38 @@ export function FlowInfo({
                 <NodeLogs nodeId={selectedFlow?.id || ''} />
               )}
             </div>
+          </>
+        )
+
+      case 'Usage':
+        const mockRevenueData = {
+          monthly: [
+            { month: 'Jan', value: 1200, growth: 10 },
+            { month: 'Feb', value: 1400, growth: 15 },
+          ],
+          current: {
+            percentage: 75,
+            amount: 1500,
+            growth: 12
+          }
+        }
+
+        return (
+          <>
+            <FlowHeader
+              name={selectedFlow?.name || data.registryName}
+              description={selectedFlow?.description || data.registryDescription}
+            />
+            <div className="rounded-lg border border-border bg-background p-6 w-full" style={{marginBottom: 20}}>
+              <div className="flex items-center justify-between mb-8">
+                <h2 className="text-xl font-semibold">Usage Over Time</h2>
+                <ExportButton onExport={() => {}} />
+              </div>
+              <div className="h-[300px] w-full">
+                <NodeRevenueChart data={mockRevenueData} />
+              </div>
+            </div>
+            <NodeRevenueStats data={mockRevenueData} />
           </>
         )
 

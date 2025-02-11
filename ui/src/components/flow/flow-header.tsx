@@ -15,15 +15,15 @@ interface FlowHeaderProps {
   onTagClick?: (tag: string) => void
 }
 
-export function FlowHeader({ 
-  name, 
-  description, 
+export function FlowHeader({
+  name,
+  description,
   subtitle,
   tags = [],
   url,
   isPinned,
   onPin,
-  onTagClick 
+  onTagClick
 }: FlowHeaderProps) {
 
   const handlePinClick = async () => {
@@ -41,6 +41,7 @@ export function FlowHeader({
     })
   }
 
+export function FlowHeader({ name, description, subtitle }: FlowHeaderProps) {
   return (
     <div className="space-y-4 pb-6">
       <div className="space-y-1">
@@ -95,20 +96,20 @@ export function FlowHeader({
           )}
           {description && (
             <div className="flex justify-end gap-4 text-sm">
-              <a 
-                href="#" 
+              <a
+                href="#"
                 className="text-blue-500 hover:text-blue-400 hover:underline"
               >
                 Terms and Conditions
               </a>
-              <a 
-                href="#" 
+              <a
+                href="#"
                 className="text-blue-500 hover:text-blue-400 hover:underline"
               >
                 Privacy Policy
               </a>
-              <a 
-                href="#" 
+              <a
+                href="#"
                 className="text-blue-500 hover:text-blue-400 hover:underline"
               >
                 Customer Support

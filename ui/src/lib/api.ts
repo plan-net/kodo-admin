@@ -231,7 +231,7 @@ export const api = {
       const fuse = new Fuse(flowsData.items, options);
       const searchResults = fuse.search(query);
       const items = searchResults.map(result => result.item);
-      
+
       return {
         total: flowsData.items.length, // Total should be all possible items
         filtered: items.length,        // Filtered is the search results
@@ -287,7 +287,7 @@ export const api = {
   getFlowOutput: async (flowId: string) => {
     const url = `${reg_url2}/flow/${flowId}/stdout`;
     console.log('Fetching flow output:', url);
-    
+
     try {
       const response = await fetch(url);
       return await response.text();
@@ -301,7 +301,7 @@ export const api = {
   getFlowSteps: async (flowId: string) => {
     const url = `${reg_url2}/flow/${flowId}/event`;
     console.log('Fetching flow steps:', url);
-    
+
     try {
       const response = await fetch(url);
       return await response.text();
@@ -315,7 +315,7 @@ export const api = {
   getFlowErrors: async (flowId: string) => {
     const url = `${reg_url2}/flow/${flowId}/stderr`;
     console.log('Fetching flow errors:', url);
-    
+
     try {
       const response = await fetch(url);
       return await response.text();
@@ -328,7 +328,7 @@ export const api = {
   getFlowDetails: async (flowId: string) => {
     const url = `${reg_url2}/flow/${flowId}`;
     console.log('Fetching flow details:', url);
-    
+
     try {
       const response = await fetch(url);
       if (!response.ok) {
@@ -357,4 +357,4 @@ export const api = {
       throw error;
     }
   },
-}; 
+};

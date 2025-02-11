@@ -1,5 +1,8 @@
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
+import { useState, useEffect } from "react"
+import { api } from "@/lib/api"
+import { refreshSidebarPinnedFlows } from '@/components/layout/sidebar'
 import { FlowTag } from "./flow-tag"
 
 interface FlowCardProps {
@@ -48,6 +51,7 @@ export function FlowCard({ data, onPin, onShow, selectedTags = [], onTagClick = 
 
       <div className="space-y-2">
         <div>
+          {console.log('Price value:', data.price)}
           <Badge variant="outline" className="text-xs">
             Price: ${data.price?.toFixed(2) || '0.00'}
           </Badge>
