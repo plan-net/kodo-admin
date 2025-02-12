@@ -10,23 +10,45 @@ import outputsData from '@/data/outputs.json';
 import Fuse from 'fuse.js';
 import {client, flowsFlows} from "./gen-api";
 
-const reg_url = process.env.NEXT_PUBLIC_REGISTRY_URL || 'http://localhost:3371'
+// todo: or maybe this is correct?
+// import { client, flowsFlows } from "../../ui/src/lib/gen-api";
+
 const reg_url2 = 'http://localhost:3371'
+
+// todo: or this?
+// const reg_url = process.env.NEXT_PUBLIC_REGISTRY_URL || 'http://localhost:3367'
+const reg_url = process.env.NEXT_PUBLIC_REGISTRY_URL || 'http://localhost:3371'
 
 
 client.setConfig({
-    baseUrl:reg_url,
+  baseUrl: reg_url,
 })
 
 const flowsData = {
   items: [] // Initialize empty, will be populated from API
 };
 
+client.interceptors.request.use(async (request, options) => {
+  if (typeof window === 'undefined') {
+    return request;
+  }
+  const response = await fetch('/api/token?audience=kodosumi-service', {
+    method: 'GET',
+    headers: {
+      'Content-Type': 'application/x-www-form-urlencoded',
+    },
+  }
+  )
+  const token = (await response.json())
+  request.headers.set('Authorization', 'Bearer ' + token.access_token);
+  return request;
+});
+
 export const api = {
   // Get list of all nodes with basic info
-  getNodes: () => 
+  getNodes: () =>
     Promise.delay(500).then(() => nodesData),
-  
+
   // Get detailed data for a specific node
   getNodeDetails: (nodeId: string) =>
     Promise.delay(700).then(() => {
@@ -36,28 +58,28 @@ export const api = {
       }
       return details;
     }),
-  
+
   getRequestsData: () =>
     Promise.delay(700).then(() => requestsData),
-  
+
   getStatsData: () =>
     Promise.delay(600).then(() => statsData),
-  
+
   getCurrentUser: () =>
     Promise.delay(300).then(() => userData.authenticated),
-    
+
   getNotifications: () =>
     Promise.delay(400).then(() => ({
       notifications: notificationsData.notifications,
       unreadCount: notificationsData.unreadCount
     })),
-    
+
   markNotificationAsRead: (notificationId: string) =>
     Promise.delay(300).then(() => ({ success: true })),
-    
+
   markAllNotificationsAsRead: () =>
     Promise.delay(300).then(() => ({ success: true })),
-    
+
   // Get logs for a specific node
   getNodeLogs: (nodeId: string) =>
     Promise.delay(600).then(() => {
@@ -67,7 +89,7 @@ export const api = {
       }
       return logs;
     }),
-  
+
   // Get output data for a specific node
   getNodeOutput: (nodeId: string) =>
     Promise.delay(600).then(() => {
@@ -231,7 +253,7 @@ export const api = {
       const fuse = new Fuse(flowsData.items, options);
       const searchResults = fuse.search(query);
       const items = searchResults.map(result => result.item);
-      
+
       return {
         total: flowsData.items.length, // Total should be all possible items
         filtered: items.length,        // Filtered is the search results
@@ -287,7 +309,7 @@ export const api = {
   getFlowOutput: async (flowId: string) => {
     const url = `${reg_url2}/flow/${flowId}/stdout`;
     console.log('Fetching flow output:', url);
-    
+
     try {
       const response = await fetch(url);
       return await response.text();
@@ -301,7 +323,7 @@ export const api = {
   getFlowSteps: async (flowId: string) => {
     const url = `${reg_url2}/flow/${flowId}/event`;
     console.log('Fetching flow steps:', url);
-    
+
     try {
       const response = await fetch(url);
       return await response.text();
@@ -315,7 +337,7 @@ export const api = {
   getFlowErrors: async (flowId: string) => {
     const url = `${reg_url2}/flow/${flowId}/stderr`;
     console.log('Fetching flow errors:', url);
-    
+
     try {
       const response = await fetch(url);
       return await response.text();
@@ -328,7 +350,7 @@ export const api = {
   getFlowDetails: async (flowId: string) => {
     const url = `${reg_url2}/flow/${flowId}`;
     console.log('Fetching flow details:', url);
-    
+
     try {
       const response = await fetch(url);
       if (!response.ok) {
@@ -357,4 +379,4 @@ export const api = {
       throw error;
     }
   },
-}; 
+};
