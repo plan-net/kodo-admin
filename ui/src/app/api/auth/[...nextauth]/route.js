@@ -27,7 +27,8 @@ export const authOptions = {
           session.refreshToken = token.refreshToken
           return session
         }
-      }
+      },
+      trustHost: true
 }
 const handler = NextAuth(authOptions);
 export { handler as GET, handler as POST }
