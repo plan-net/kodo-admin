@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "demo": "npx pnpm build && pnpm start -p $PORT",
+    "demo": "npx yarn build && npx yarn start -p $PORT",
     "dev": "next dev --turbo -p $PORT",
     "build": "next build",
     "start": "next start -p $PORT",
