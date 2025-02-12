@@ -5,11 +5,11 @@ This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-
 First, run the development server:
 
 ```bash
-PORT=3000 npx yarn dev
+export PORT=3000 npx yarn dev
 ```
 
 Build and deploy
 
 ```bash
-PORT=3000 npx yarn build && npx yarn start
+export PORT=3000 npx yarn build && npx yarn start
 ```
