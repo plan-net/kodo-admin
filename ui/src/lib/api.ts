@@ -13,12 +13,12 @@ import {client, flowsFlows} from "./gen-api";
 // todo: or maybe this is correct?
 // import { client, flowsFlows } from "../../ui/src/lib/gen-api";
 
-const reg_url2 = 'http://localhost:3371'
+// const reg_url2 = 'http://localhost:3371'
 
 // todo: or this?
 // const reg_url = process.env.NEXT_PUBLIC_REGISTRY_URL || 'http://localhost:3367'
 const reg_url = process.env.NEXT_PUBLIC_REGISTRY_URL || 'http://localhost:3371'
-
+const reg_url2  = reg_url
 
 client.setConfig({
   baseUrl: reg_url,
