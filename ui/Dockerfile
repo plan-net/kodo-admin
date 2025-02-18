@@ -22,4 +22,4 @@ RUN yarn build
 EXPOSE 3000
 
 # Start the Next.js application
-CMD ["sh", "run.sh"]
+CMD ["yarn", "start"]
