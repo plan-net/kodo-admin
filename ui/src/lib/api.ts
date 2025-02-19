@@ -12,13 +12,17 @@ import { client, flowsFlows } from "./gen-api";
 
 
 async function fetchRegUrl(): Promise<string> {
+  if (typeof window === 'undefined') {
+    return "http://localhost:5000";
+  }
   const response = await fetch('/api/registry');
   const data = await response.json();
   return data.registry_url;
 }
 
+// this will work on the server and client side:
+const reg_url = await fetchRegUrl();
 
-const reg_url = process.env.REGISTRY_URL || await fetchRegUrl();
 client.setConfig({
   baseUrl: reg_url,
 });
