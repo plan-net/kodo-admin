@@ -8,25 +8,25 @@ import notificationsData from '@/data/notifications.json';
 import logsData from '@/data/logs.json'
 import outputsData from '@/data/outputs.json';
 import Fuse from 'fuse.js';
-import {client, flowsFlows} from "./gen-api";
+import { client, flowsFlows } from "./gen-api";
 
-// todo: or maybe this is correct?
-// import { client, flowsFlows } from "../../ui/src/lib/gen-api";
 
-// const reg_url2 = 'http://localhost:3371'
+async function fetchRegUrl(): Promise<string> {
+  const response = await fetch('/api/registry');
+  const data = await response.json();
+  return data.registry_url;
+}
 
-// todo: or this?
-// const reg_url = process.env.NEXT_PUBLIC_REGISTRY_URL || 'http://localhost:3367'
-const reg_url = process.env.NEXT_PUBLIC_REGISTRY_URL || 'http://localhost:3371'
-const reg_url2  = reg_url
 
+const reg_url = process.env.REGISTRY_URL || await fetchRegUrl();
 client.setConfig({
   baseUrl: reg_url,
-})
+});
 
 const flowsData = {
   items: [] // Initialize empty, will be populated from API
 };
+
 
 client.interceptors.request.use(async (request, options) => {
   if (typeof window === 'undefined') {
@@ -103,125 +103,125 @@ export const api = {
   // Get list of all flows
   getFlows: () =>
     Promise.delay(0).then(async () => {
-        const resp = await fetch(`${reg_url2}/flows`);
-        const flows = await resp.json();
+      const resp = await fetch(`${reg_url}/flows`);
+      const flows = await resp.json();
 
-        const flowsWithLogsAndRequests = flows.items.map(flow => ({
-          ...flow,
-          logs: [
-            {
-              timestamp: new Date(Date.now() - 1000 * 60 * 5).toISOString(),
-              level: 'info',
-              message: `Flow "${flow.name}" executed successfully`,
-            },
-            {
-              timestamp: new Date(Date.now() - 1000 * 60 * 10).toISOString(),
-              level: 'warning',
-              message: 'Resource utilization above 80%',
-            },
-            {
-              timestamp: new Date(Date.now() - 1000 * 60 * 15).toISOString(),
-              level: 'error',
-              message: 'Connection timeout during external API call',
-            },
-            {
-              timestamp: new Date(Date.now() - 1000 * 60 * 20).toISOString(),
-              level: 'info',
-              message: 'Starting flow execution',
-            }
-          ],
-          requests: [
-            {
-              id: `req-${Math.random().toString(36).substr(2, 9)}`,
-              timestamp: new Date(Date.now() - 1000 * 60 * 5).toISOString(),
-              user: 'Alice Johnson',
-              role: 'Developer',
-              input: 'Analyze customer sentiment from social media posts',
-              inputTokens: 245,
-              output: 'Sentiment analysis complete: 70% positive, 20% neutral, 10% negative',
-              outputTokens: 178,
-              status: 'Completed',
-              kind: 'Batch Processing'
-            },
-            {
-              id: `req-${Math.random().toString(36).substr(2, 9)}`,
-              timestamp: new Date(Date.now() - 1000 * 60 * 15).toISOString(),
-              user: 'Bob Smith',
-              role: 'Analyst',
-              input: 'Generate quarterly sales report',
-              inputTokens: 156,
-              output: 'Report generated with 3 key insights',
-              outputTokens: 312,
-              status: 'Completed',
-              kind: 'Report Generation'
-            },
-            {
-              id: `req-${Math.random().toString(36).substr(2, 9)}`,
-              timestamp: new Date(Date.now() - 1000 * 60 * 25).toISOString(),
-              user: 'Carol White',
-              role: 'Manager',
-              input: 'Optimize marketing campaign parameters',
-              inputTokens: 189,
-              output: 'Campaign parameters optimized for maximum ROI',
-              outputTokens: 234,
-              status: 'Running',
-              kind: 'Optimization'
-            },
-            {
-              id: `req-${Math.random().toString(36).substr(2, 9)}`,
-              timestamp: new Date(Date.now() - 1000 * 60 * 35).toISOString(),
-              user: 'David Chen',
-              role: 'Data Scientist',
-              input: 'Train customer churn prediction model',
-              inputTokens: 278,
-              output: 'Model training in progress...',
-              outputTokens: 89,
-              status: 'Running',
-              kind: 'Model Training'
-            },
-            {
-              id: `req-${Math.random().toString(36).substr(2, 9)}`,
-              timestamp: new Date(Date.now() - 1000 * 60 * 45).toISOString(),
-              user: 'Eva Martinez',
-              role: 'Engineer',
-              input: 'Debug API integration workflow',
-              inputTokens: 167,
-              output: 'Error identified in authentication module',
-              outputTokens: 145,
-              status: 'Failed',
-              kind: 'Debugging'
-            }
-          ],
-          output: `Output for ${flow.name}:\n\nAnalysis complete:\n- Processing time: 1.2s\n- Confidence score: 0.95\n- Key findings: Successfully processed with optimal parameters`,
-          flowSteps: [
-            '1. Initializing flow components...',
-            '2. Loading input data...',
-            '3. Preprocessing data structures...',
-            '4. Applying transformation rules...',
-            '5. Validating output format...',
-            '6. Generating final response...',
-            '7. Cleanup and resource release'
-          ],
-          status: {
-            running: Math.random() > 0.5,
-            step: Math.floor(Math.random() * 7) + 1,
-            totalSteps: 7
+      const flowsWithLogsAndRequests = flows.items.map(flow => ({
+        ...flow,
+        logs: [
+          {
+            timestamp: new Date(Date.now() - 1000 * 60 * 5).toISOString(),
+            level: 'info',
+            message: `Flow "${flow.name}" executed successfully`,
+          },
+          {
+            timestamp: new Date(Date.now() - 1000 * 60 * 10).toISOString(),
+            level: 'warning',
+            message: 'Resource utilization above 80%',
+          },
+          {
+            timestamp: new Date(Date.now() - 1000 * 60 * 15).toISOString(),
+            level: 'error',
+            message: 'Connection timeout during external API call',
+          },
+          {
+            timestamp: new Date(Date.now() - 1000 * 60 * 20).toISOString(),
+            level: 'info',
+            message: 'Starting flow execution',
           }
-        }));
+        ],
+        requests: [
+          {
+            id: `req-${Math.random().toString(36).substr(2, 9)}`,
+            timestamp: new Date(Date.now() - 1000 * 60 * 5).toISOString(),
+            user: 'Alice Johnson',
+            role: 'Developer',
+            input: 'Analyze customer sentiment from social media posts',
+            inputTokens: 245,
+            output: 'Sentiment analysis complete: 70% positive, 20% neutral, 10% negative',
+            outputTokens: 178,
+            status: 'Completed',
+            kind: 'Batch Processing'
+          },
+          {
+            id: `req-${Math.random().toString(36).substr(2, 9)}`,
+            timestamp: new Date(Date.now() - 1000 * 60 * 15).toISOString(),
+            user: 'Bob Smith',
+            role: 'Analyst',
+            input: 'Generate quarterly sales report',
+            inputTokens: 156,
+            output: 'Report generated with 3 key insights',
+            outputTokens: 312,
+            status: 'Completed',
+            kind: 'Report Generation'
+          },
+          {
+            id: `req-${Math.random().toString(36).substr(2, 9)}`,
+            timestamp: new Date(Date.now() - 1000 * 60 * 25).toISOString(),
+            user: 'Carol White',
+            role: 'Manager',
+            input: 'Optimize marketing campaign parameters',
+            inputTokens: 189,
+            output: 'Campaign parameters optimized for maximum ROI',
+            outputTokens: 234,
+            status: 'Running',
+            kind: 'Optimization'
+          },
+          {
+            id: `req-${Math.random().toString(36).substr(2, 9)}`,
+            timestamp: new Date(Date.now() - 1000 * 60 * 35).toISOString(),
+            user: 'David Chen',
+            role: 'Data Scientist',
+            input: 'Train customer churn prediction model',
+            inputTokens: 278,
+            output: 'Model training in progress...',
+            outputTokens: 89,
+            status: 'Running',
+            kind: 'Model Training'
+          },
+          {
+            id: `req-${Math.random().toString(36).substr(2, 9)}`,
+            timestamp: new Date(Date.now() - 1000 * 60 * 45).toISOString(),
+            user: 'Eva Martinez',
+            role: 'Engineer',
+            input: 'Debug API integration workflow',
+            inputTokens: 167,
+            output: 'Error identified in authentication module',
+            outputTokens: 145,
+            status: 'Failed',
+            kind: 'Debugging'
+          }
+        ],
+        output: `Output for ${flow.name}:\n\nAnalysis complete:\n- Processing time: 1.2s\n- Confidence score: 0.95\n- Key findings: Successfully processed with optimal parameters`,
+        flowSteps: [
+          '1. Initializing flow components...',
+          '2. Loading input data...',
+          '3. Preprocessing data structures...',
+          '4. Applying transformation rules...',
+          '5. Validating output format...',
+          '6. Generating final response...',
+          '7. Cleanup and resource release'
+        ],
+        status: {
+          running: Math.random() > 0.5,
+          step: Math.floor(Math.random() * 7) + 1,
+          totalSteps: 7
+        }
+      }));
 
-        // Update the flowsData.items for other functions to use
-        flowsData.items = flows.items;
+      // Update the flowsData.items for other functions to use
+      flowsData.items = flows.items;
 
-        return {
-          total: flows.items.length,
-          filtered: flows.items.length,
-          items: flowsWithLogsAndRequests
-        };
+      return {
+        total: flows.items.length,
+        filtered: flows.items.length,
+        items: flowsWithLogsAndRequests
+      };
     }),
 
   getFlowInstances: () =>
     Promise.delay(0).then(async () => {
-      const resp = await fetch(`${reg_url2}/flow`);
+      const resp = await fetch(`${reg_url}/flow`);
       const data = await resp.json();
       return {
         result: data.result,
@@ -307,7 +307,7 @@ export const api = {
 
   // Get output for a specific flow using simple fetch
   getFlowOutput: async (flowId: string) => {
-    const url = `${reg_url2}/flow/${flowId}/stdout`;
+    const url = `${reg_url}/flow/${flowId}/stdout`;
     console.log('Fetching flow output:', url);
 
     try {
@@ -321,7 +321,7 @@ export const api = {
 
   // Get steps for a specific flow using simple fetch
   getFlowSteps: async (flowId: string) => {
-    const url = `${reg_url2}/flow/${flowId}/event`;
+    const url = `${reg_url}/flow/${flowId}/event`;
     console.log('Fetching flow steps:', url);
 
     try {
@@ -335,7 +335,7 @@ export const api = {
 
   // Get errors for a specific flow using stderr endpoint
   getFlowErrors: async (flowId: string) => {
-    const url = `${reg_url2}/flow/${flowId}/stderr`;
+    const url = `${reg_url}/flow/${flowId}/stderr`;
     console.log('Fetching flow errors:', url);
 
     try {
@@ -348,7 +348,7 @@ export const api = {
   },
 
   getFlowDetails: async (flowId: string) => {
-    const url = `${reg_url2}/flow/${flowId}`;
+    const url = `${reg_url}/flow/${flowId}`;
     console.log('Fetching flow details:', url);
 
     try {
@@ -364,7 +364,7 @@ export const api = {
   },
 
   removeFlow: async (flowId: string) => {
-    const url = `${reg_url2}/flow/${flowId}/remove`;
+    const url = `${reg_url}/flow/${flowId}/remove`;
     try {
       const response = await fetch(url, {
         method: 'DELETE',

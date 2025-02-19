@@ -8,8 +8,7 @@
     "build": "next build",
     "start": "next start -p $PORT",
     "lint": "next lint",
-    "gen-api": "npx @hey-api/openapi-ts -c @hey-api/client-fetch -i http://localhost:3366/docs/openapi.json -o ui/src/lib/gen-api",
-    "start-with-env": "node -e 'console.log(process.env)' && next start -p $PORT"
+    "gen-api": "npx @hey-api/openapi-ts -c @hey-api/client-fetch -i http://localhost:3366/docs/openapi.json -o ui/src/lib/gen-api"
   },
   "dependencies": {
     "@hey-api/client-fetch": "^0.7.0",
