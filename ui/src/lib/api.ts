@@ -10,6 +10,15 @@ import outputsData from '@/data/outputs.json';
 import Fuse from 'fuse.js';
 import { client, flowsFlows } from "./gen-api";
 
+type Flow = {
+  name: string;
+  tags: string[];
+  url: string;
+};
+
+const flowsData: { items: Flow[] } = {
+  items: []
+};
 
 async function fetchRegUrl(): Promise<string> {
   if (typeof window === 'undefined') {
@@ -26,11 +35,6 @@ const reg_url = await fetchRegUrl();
 client.setConfig({
   baseUrl: reg_url,
 });
-
-const flowsData = {
-  items: [] // Initialize empty, will be populated from API
-};
-
 
 client.interceptors.request.use(async (request, options) => {
   if (typeof window === 'undefined') {
@@ -107,10 +111,15 @@ export const api = {
   // Get list of all flows
   getFlows: () =>
     Promise.delay(0).then(async () => {
-      const resp = await fetch(`${reg_url}/flows`);
-      const flows = await resp.json();
+      const resp = await flowsFlows();
 
-      const flowsWithLogsAndRequests = flows.items.map(flow => ({
+      type FlowResponse = {
+        items: Array<Flow>;
+      };
+      
+      const flowData = resp.data as FlowResponse;
+      
+      const flowsWithLogsAndRequests = flowData.items.map(flow => ({
         ...flow,
         logs: [
           {
@@ -214,11 +223,11 @@ export const api = {
       }));
 
       // Update the flowsData.items for other functions to use
-      flowsData.items = flows.items;
+       flowsData.items = flowData.items;
 
       return {
-        total: flows.items.length,
-        filtered: flows.items.length,
+        total: flowData.items.length,
+        filtered: flowData.items.length,
         items: flowsWithLogsAndRequests
       };
     }),
@@ -256,7 +265,7 @@ export const api = {
 
       const fuse = new Fuse(flowsData.items, options);
       const searchResults = fuse.search(query);
-      const items = searchResults.map(result => result.item);
+      const items = searchResults.map((result: { item: unknown }) => result.item);
 
       return {
         total: flowsData.items.length, // Total should be all possible items
