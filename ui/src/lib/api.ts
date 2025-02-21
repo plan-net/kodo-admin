@@ -9,6 +9,7 @@ import logsData from '@/data/logs.json'
 import outputsData from '@/data/outputs.json';
 import Fuse from 'fuse.js';
 import { client, flowsFlows } from "./gen-api";
+import type { RegistrySettings } from './types';
 
 type Flow = {
   name: string;
@@ -20,27 +21,27 @@ const flowsData: { items: Flow[] } = {
   items: []
 };
 
-async function fetchRegUrl(): Promise<string> {
+async function fetchRegUrl(): Promise<RegistrySettings> {
   if (typeof window === 'undefined') {
     return "http://localhost:5000";
   }
   const response = await fetch('/api/registry');
   const data = await response.json();
-  return data.registry_url;
+  return data;
 }
 
 // this will work on the server and client side:
-const reg_url = await fetchRegUrl();
+const reg_settings = await fetchRegUrl();
 
 client.setConfig({
-  baseUrl: reg_url,
+  baseUrl: reg_settings.registry_url,
 });
 
 client.interceptors.request.use(async (request, options) => {
   if (typeof window === 'undefined') {
     return request;
   }
-  const response = await fetch('/api/token?audience=kodosumi-service', {
+  const response = await fetch('/api/token?audience=' + reg_settings.registry_audience , {
     method: 'GET',
     headers: {
       'Content-Type': 'application/x-www-form-urlencoded',
@@ -234,7 +235,7 @@ export const api = {
 
   getFlowInstances: () =>
     Promise.delay(0).then(async () => {
-      const resp = await fetch(`${reg_url}/flow`);
+      const resp = await fetch(`${reg_settings.registry_url}/flow`);
       const data = await resp.json();
       return {
         result: data.result,
@@ -320,7 +321,7 @@ export const api = {
 
   // Get output for a specific flow using simple fetch
   getFlowOutput: async (flowId: string) => {
-    const url = `${reg_url}/flow/${flowId}/stdout`;
+    const url = `${reg_settings}/flow/${flowId}/stdout`;
     console.log('Fetching flow output:', url);
 
     try {
@@ -334,7 +335,7 @@ export const api = {
 
   // Get steps for a specific flow using simple fetch
   getFlowSteps: async (flowId: string) => {
-    const url = `${reg_url}/flow/${flowId}/event`;
+    const url = `${reg_settings}/flow/${flowId}/event`;
     console.log('Fetching flow steps:', url);
 
     try {
@@ -348,7 +349,7 @@ export const api = {
 
   // Get errors for a specific flow using stderr endpoint
   getFlowErrors: async (flowId: string) => {
-    const url = `${reg_url}/flow/${flowId}/stderr`;
+    const url = `${reg_settings}/flow/${flowId}/stderr`;
     console.log('Fetching flow errors:', url);
 
     try {
@@ -361,7 +362,7 @@ export const api = {
   },
 
   getFlowDetails: async (flowId: string) => {
-    const url = `${reg_url}/flow/${flowId}`;
+    const url = `${reg_settings}/flow/${flowId}`;
     console.log('Fetching flow details:', url);
 
     try {
@@ -377,7 +378,7 @@ export const api = {
   },
 
   removeFlow: async (flowId: string) => {
-    const url = `${reg_url}/flow/${flowId}/remove`;
+    const url = `${reg_settings}/flow/${flowId}/remove`;
     try {
       const response = await fetch(url, {
         method: 'DELETE',

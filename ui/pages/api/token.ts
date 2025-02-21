@@ -22,6 +22,11 @@ export default async function handler(
   });
   const audience = req.query.audience as string
 
+  if (!decoded) {
+    res.status(401).json({ access_token: '' })
+    return
+  }
+
   // fetch an access token from keycloak
   const params = new URLSearchParams()
   params.append('grant_type', 'refresh_token')
@@ -36,10 +41,11 @@ export default async function handler(
     },
     body: params,
   })
+  const data = await response.json()
   if (response.status !== 200) {  
     res.status(502).json({ access_token: '' })
+    console.warn(data)
     return
   }
-  const token = (await response.json())
-  res.status(200).json({access_token: token.access_token})
+  res.status(200).json({access_token: data.access_token})
 }
